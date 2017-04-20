@@ -1,0 +1,17 @@
+<%-- any content can be specified here e.g.: --%>
+<%@page import="jbeans.Genre"%>
+<%@page import="jbeans.GenreList"%>
+<%@ page pageEncoding="UTF-8" %>
+
+<div class="sidebar1">
+                <h4>Список жанров</h4>
+                <jsp:useBean id="genreList" scope="application" class="jbeans.GenreList"/>
+                <ul class="nav">
+                    <li><a href="books.jsp?genre_id=1&page=0">Все книги</a></li>
+                    <%for (Genre genre : genreList.getGenresList()) {%>
+                    <li><a href="books.jsp?genre_id=<%=genre.getId()%>&name=<%=genre.getName()%>&page=0"><%=genre.getName()%></a></li>
+
+                    <%}%>
+                </ul>
+                <p>&nbsp;</p>
+            </div>

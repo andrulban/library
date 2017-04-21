@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title></title>
+    </h:head>
+    <h:body>
+        <ui:composition template="/templates/aFullPage.xhtml">
+            <ui:define name="title">  
+                #{messages.index_title}
+            </ui:define>
+            <ui:define name="content">
+
+                <h:form id="contentForm">
+
+                    <h:panelGroup id="admin_tools" rendered="#{request.isUserInRole('admin')}">
+                        <h:commandLink id="addBookLinc" rendered="#{!bookListController.isEditorMode}">
+                            <h:graphicImage library="images" name="add.jpg"/>
+                            <h:outputText value="#{messages.Add}"/>
+                            <f:ajax onevent="showProgress" execute="@form" render="@form" />
+                        </h:commandLink>
+                        <h:commandLink id="editBookLink" rendered="#{!bookListController.isEditorMode}" action="#{bookListController.switchEditorMode()}">
+                            <h:graphicImage library="images" name="edit.jpg"/>
+                            <h:outputText value="#{messages.Edit}"/>
+                            <f:ajax onevent="showProgress" execute="@form" render="@form" />
+                        </h:commandLink>
+                        <h:commandButton id="saveChangesLink" rendered="#{bookListController.isEditorMode}" action="#{bookListController.editBookList()}" value="#{messages.Save}">
+                            <f:ajax onevent="showProgress" execute="@form" render="@form" />
+                        </h:commandButton>
+                        <h:commandButton immediate="true" id="cancelChangesLink" rendered="#{bookListController.isEditorMode}" action="#{bookListController.switchEditorMode()}" value="#{messages.Cancel}">
+                            <f:ajax onevent="showProgress" execute="@form" render="@form" />
+                        </h:commandButton>
+                    </h:panelGroup>
+
+                    <h:dataTable id="tableOfBooks" value="#{bookListController.currentBookList}" var="book" cellspacing="10px" columnClasses="col1, col2, col3">
+                        <h:column>
+                            <h:outputLink value="#{request.contextPath}/PdfReader">
+                                <h:graphicImage alt="#{messages.book_cover}" value="/ImageShower?bookId=#{book.id}" width="120px" height="160px"/>
+                                <f:param name="book" value="#{book.id}"/>
+                                <f:param name="action" value="read"/>
+                                <f:param name="bookName" value="#{book.name}"/>
+                            </h:outputLink>
+                        </h:column>
+                        <h:column>
+                            <div>
+
+                                <h3>
+                                    <strong> 
+                                        <h:outputText value="#{book.name}" rendered="#{!book.isEditing}"/>
+                                    </strong>
+                                </h3>
+                                <p>
+                                    <strong>
+                                        <h:outputText value="#{messages.book_name}:" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                                    </strong>
+                                    <h:inputText value="#{book.name}" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                                </p>
+
+                                <p>
+                                    <strong>#{messages.author}: </strong>
+                                    <h:outputText value="#{book.author}" rendered="#{!book.isEditing}"/>
+                                    <h:inputText value="#{book.author}" styleClass="name_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                                </p>                           
+                                <p>
+                                    <strong>#{messages.page_count}: </strong>
+                                    <h:outputText value="#{book.pageCount} #{messages.pages}" rendered="#{!book.isEditing}"/>
+                                    <h:inputText value="#{book.pageCount}" styleClass="pages_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                                </p>
+                                <p>
+                                    <strong>#{messages.publisher}: </strong>
+                                    <h:outputText value="#{book.publisher}" rendered="#{!book.isEditing}"/>
+                                    <h:inputText value="#{book.publisher}" styleClass="publisher_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                                </p>
+                                <p>
+                                    <strong>#{messages.publish_year}: </strong>
+                                    <h:outputText value="#{book.publishDate} г." rendered="#{!book.isEditing}"/>
+                                    <h:inputText value="#{book.publishDate}" styleClass="publisher_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                                </p>
+                                <p>
+                                    <strong>#{messages.isbn}: </strong> 
+                                    <h:outputText value="#{book.isbn}" rendered="#{!book.isEditing}"/>
+                                    <h:inputText value="#{book.isbn}" styleClass="name_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                                </p>
+                                <p>
+                                    <strong>
+                                        <h:outputLink value="#{request.contextPath}/PdfReader" rendered="#{!book.isEditing}">
+                                            <h:outputText value="#{messages.read}"/>
+                                            <f:param name="book" value="#{book.id}"/>
+                                            <f:param name="action" value="read"/>
+                                            <f:param name="bookName" value="#{book.name}"/>
+                                        </h:outputLink>
+                                    </strong>
+                                    <strong>
+                                        <h:outputLink value="#{request.contextPath}/PdfReader" rendered="#{!book.isEditing}">
+                                            <h:outputText value="#{messages.download}"/>
+                                            <f:param name="book" value="#{book.id}"/>
+                                            <f:param name="action" value="download"/>
+                                            <f:param name="bookName" value="#{book.name}"/>
+                                        </h:outputLink>
+                                    </strong>
+                                </p>
+                            </div>
+                        </h:column>
+                        <h:column>
+                            <div class="book_details">
+                                <p><strong>#{messages.book_description}</strong></p>
+                                <h:outputText value="#{book.descr}" rendered="#{!book.isEditing}"/>
+                                <h:inputTextarea value="#{book.descr}" styleClass="descr_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                            </div>
+                        </h:column>
+                        <h:column>
+                            <h:selectBooleanCheckbox value="#{book.isEditing}" rendered="#{!bookListController.isEditorMode and request.isUserInRole('admin')}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:form>
+
+            </ui:define>
+            <ui:define name="pageNumbers">                                           
+                <h:form>
+                    <h:selectOneMenu id="booksAmountOnPageForm" value="#{bookListController.booksOnPage}" valueChangeListener="#{bookListController.changeBooksCountOnPage}">
+                        <f:selectItem itemValue="5"/>
+                        <f:selectItem itemValue="10"/>
+                        <f:selectItem itemValue="15"/>
+                        <f:selectItem itemValue="20"/>
+                        <f:ajax event="change" execute="@form booksAmountOnPageForm" render="booksAmountOnPageForm :contentForm :pager1panelGroup :pager2panelGroup" onevent="showProgress"/>
+                    </h:selectOneMenu>
+                    <h:outputText value="#{messages.pager}"  rendered="#{bookListController.totalBooksCount>bookListController.booksOnPage}"/>
+                    <ui:repeat value="#{bookListController.pageNumbers}" var="p">
+                        <h:commandLink  rendered="#{bookListController.totalBooksCount>bookListController.booksOnPage}" value="#{p}" styleClass="#{p==bookListController.selectedPageNumber? 'selected_page':''}">
+                            <f:param name="page" value="#{p}"/>
+                            <f:ajax event="click" render=" :pager1panelGroup :pager2panelGroup :contentForm" listener="#{bookListController.fillBooksByPage()}" onevent="showProgress"/>
+                        </h:commandLink>
+                    </ui:repeat>
+                </h:form>                    
+            </ui:define>
+            <ui:define name="books_count">
+                <h:outputText id="booksCountOutputText" value="#{messages.found_books} #{bookListController.totalBooksCount}"/>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+
+

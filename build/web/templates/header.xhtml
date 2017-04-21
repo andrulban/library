@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+
+            <div class="logo">
+                <h:graphicImage library="images" name="libraryLogo.png" />
+
+            </div>
+            <div class="descr">
+                <h3 style="margin-bottom:3px;">#{messages.zdarova}</h3>
+                <h3>#{messages.welcome_title2}</h3>
+
+            </div>
+
+            <div class="welcome">
+                <ui:include src="locales.xhtml"/>
+                <h5>#{messages.welcome_title}#{user.username}!</h5>                
+
+                <h:form>
+                    <h:commandLink value="#{messages.exit}" action="#{user.logout()}"/>  
+                </h:form>
+            </div>
+
+
+
+            <div class="search_div">
+                <h:form id="searchForm" styleClass="search_form">
+                    <h:inputText id="search_string" styleClass="search_string" value="#{bookListController.searchString}"/>
+                    <h:commandButton styleClass="search_button" value="#{messages.search}">
+                        <f:ajax onevent="showProgress" execute="@form" listener="#{bookListController.fillBooksBySearch()}" render="@form :sideBarForm :lettersForm :contentForm :pager1panelGroup :pager2panelGroup :booksCountOutputText" />
+                    </h:commandButton>
+                    <h:selectOneMenu value="#{bookListController.searchType}">
+                        <f:selectItems value="${bookListController.searchList}"/>
+                    </h:selectOneMenu>
+                </h:form>
+            </div>
+
+            <div class="letters">
+                <h:form id="lettersForm">
+                    <ui:repeat value="#{bookListController.russianLetters}" var="letter"> <!--Высвечиваю все буквы из массива-->
+                        <h:commandLink value="#{letter}" styleClass="#{letter==bookListController.selectedLetter?'selected_letter':''}"> <!--Делаю из них ссылки с заполнением списка в searchController при помощи параметра letter-->
+                            <f:param name="letter" value="#{letter}" />
+                            <f:ajax event="click" listener="#{bookListController.fillBooksByLetter()}" render="@form :sideBarForm :searchForm :contentForm :pager1panelGroup :pager2panelGroup :booksCountOutputText" onevent="showProgress"/>
+                        </h:commandLink>
+                    </ui:repeat>
+                </h:form>
+            </div>
+
+        </ui:composition>
+
+    </h:body>
+</html>
+

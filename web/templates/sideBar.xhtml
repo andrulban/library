@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+            <h:outputText value="#{messages.genres}"/>
+            <h:form id="sideBarForm" styleClass="genres">
+                <ui:repeat value="#{genreController.genreList}" var="g">
+                    <h:commandLink value="#{g.name}" styleClass="#{g.id==bookListController.selectedGenreId?'selected_genre':''}" >
+                        <f:param name="genre_id" value="#{g.id}"/>
+                        <f:ajax event="click" listener="#{bookListController.fillBooksByGenre()}" onevent="showProgress" render="@form :searchForm :lettersForm :contentForm :pager1panelGroup :pager2panelGroup :booksCountOutputText"/>
+                    </h:commandLink>
+                </ui:repeat>
+            </h:form>
+        </ui:composition>
+        <!--<f:ajax event="click" listener="" render="@form :bookList :pagecount :lettersForm :searchForm :pages1 :pages2" onevent="showPrgress"/>-->
+                        <!--<f:ajax onevent="showProgress" event="click" render=":booksList @form :lettersForm :pages1 :pages2 :booksCount" listener=""/>-->
+                   
+    </h:body>
+</html>
+
+

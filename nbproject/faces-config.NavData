@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene Scope="Faces Configuration Only" version="2">
+    <Scope Scope="Faces Configuration Only">
+        <Node id="pages/books.xhtml" x="146" y="73" zoom="true"/>
+        <Node id="index.xhtml" x="177" y="357" zoom="true"/>
+        <Node id="pages/content.xhtml" x="510" y="54" zoom="true"/>
+    </Scope>
+    <Scope Scope="Project">
+        <Node id="index.xhtml" x="177" y="357" zoom="true"/>
+        <Node id="templates/content.xhtml" x="900" y="150" zoom="true"/>
+        <Node id="templates/locales.xhtml" x="523" y="408" zoom="true"/>
+        <Node id="pages/books.xhtml" x="146" y="73" zoom="false"/>
+        <Node id="templates/aFullPage.xhtml" x="683" y="273" zoom="true"/>
+        <Node id="templates/sideBar.xhtml" x="650" y="150" zoom="true"/>
+        <Node id="templates/header.xhtml" x="400" y="150" zoom="true"/>
+        <Node id="templates/footer.xhtml" x="150" y="450" zoom="true"/>
+        <Node id="pages/content.xhtml" x="510" y="54" zoom="true"/>
+    </Scope>
+    <Scope Scope="All Faces Configurations"/>
+</Scene>

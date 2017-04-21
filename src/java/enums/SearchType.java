@@ -10,6 +10,5 @@ package enums;
  * @author andrusha
  */
 public enum SearchType {
-    AUTHOR,
-    TITLE
+     AUTHOR, TITLE
 }

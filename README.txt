@@ -1,1 +1,0 @@
-My first web app, I’ve been making all 6 versions of it for about month.

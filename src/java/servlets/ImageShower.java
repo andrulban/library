@@ -6,9 +6,11 @@
 package servlets;
 
 import controllers.BookListController;
+import entity_hibernate.Book;
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author andrusha
  */
+@WebServlet(name = "ImageShower",
+urlPatterns = {"/ImageShower"})
 public class ImageShower extends HttpServlet {
 
     /**
@@ -29,20 +33,22 @@ public class ImageShower extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+           throws ServletException, IOException {
         response.setContentType("image/jpeg");
         OutputStream out = response.getOutputStream();
         try {
-            BookListController sc = (BookListController) request.getSession(false).getAttribute("bookListController");
-            int index= Integer.valueOf(request.getParameter("bookId"));
-            byte[] image = sc.getImage(index);
+            int index = Integer.valueOf(request.getParameter("index"));
+            System.out.println(index);
+            BookListController bookListController = (BookListController) request.getSession(false).getAttribute("bookListController");
+            Book book = bookListController.getPager().getList().get(index);
+            byte[] image = book.getImage();
+           // int id= Integer.valueOf(request.getParameter("bookId"));
+           // byte[] image = bookListController.getImage(id);
             response.setContentLength(image.length);
-            out.write(image);            
-        }
-        catch (IOException | NumberFormatException ex) {
+            out.write(image);
+        } catch (Exception ex) {
             ex.printStackTrace();
-        }
-        finally {
+        } finally {
             out.close();
         }
     }

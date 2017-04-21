@@ -24,9 +24,11 @@
                     <div class="welcome">
                         <ui:include src="/templates/locales.xhtml"/>
                     </div>
+                    <h:panelGroup id="welcome_title">
                     <h2>#{messages.welcome_title}
                         <p>#{messages.welcome_title2}</p>
                     </h2>
+                    </h:panelGroup>
                 </div>
                 <div>
                     <h3>#{messages.input_info}</h3>
@@ -44,7 +46,7 @@
                         </p>
                         <div>
                             <h:commandButton styleClass="button" action="#{user.login()}" value="#{messages.enter_button}" onclick="return checkValue(this.form, '#{messages.error_obligatoryUserName}');">
-                                <f:ajax execute="@form" render="@form" onevent="showProgress"/>
+                                <f:ajax execute="@form" render="login_form" onevent="showProgress"/>
                             </h:commandButton>
                         </div>
                         <p><h:message id="mesIndexError1" for="login_form" styleClass="error"/></p>                        

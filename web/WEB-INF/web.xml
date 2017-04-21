@@ -10,20 +10,12 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
-        <servlet-name>ImageShower</servlet-name>
-        <servlet-class>servlets.ImageShower</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>PdfReader</servlet-name>
         <servlet-class>servlets.PdfReader</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ImageShower</servlet-name>
-        <url-pattern>/ImageShower</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>PdfReader</servlet-name>

@@ -17,28 +17,29 @@
                 <h:form id="contentForm">
 
                     <h:panelGroup id="admin_tools" rendered="#{request.isUserInRole('admin')}">
-                        <h:commandLink id="addBookLinc" rendered="#{!bookListController.isEditorMode}">
-                            <h:graphicImage library="images" name="add.jpg"/>
-                            <h:outputText value="#{messages.Add}"/>
-                            <f:ajax onevent="showProgress" execute="@form" render="@form" />
-                        </h:commandLink>
-                        <h:commandLink id="editBookLink" rendered="#{!bookListController.isEditorMode}" action="#{bookListController.switchEditorMode()}">
-                            <h:graphicImage library="images" name="edit.jpg"/>
-                            <h:outputText value="#{messages.Edit}"/>
-                            <f:ajax onevent="showProgress" execute="@form" render="@form" />
-                        </h:commandLink>
-                        <h:commandButton id="saveChangesLink" rendered="#{bookListController.isEditorMode}" action="#{bookListController.editBookList()}" value="#{messages.Save}">
-                            <f:ajax onevent="showProgress" execute="@form" render="@form" />
-                        </h:commandButton>
-                        <h:commandButton immediate="true" id="cancelChangesLink" rendered="#{bookListController.isEditorMode}" action="#{bookListController.switchEditorMode()}" value="#{messages.Cancel}">
-                            <f:ajax onevent="showProgress" execute="@form" render="@form" />
-                        </h:commandButton>
+                        <f:ajax onevent="showProgress" execute="@form " render="@form :pager1panelGroup :pager2panelGroup :booksCountOutputText">
+                            <h:commandLink id="addBookLinc" rendered="#{!bookListController.isEditorMode}">
+                                <h:graphicImage library="images" name="add.jpg"/>
+                                <h:outputText value="#{messages.Add}"/>
+                            </h:commandLink>
+                            <h:commandLink id="editBookLink" rendered="#{!bookListController.isEditorMode and bookListController.pager.totalBooksCount>0}" action="#{bookListController.switchEditorMode()}">
+                                <h:graphicImage library="images" name="edit.jpg"/>
+                                <h:outputText value="#{messages.Edit}"/>
+                            </h:commandLink>
+                            <h:commandButton id="saveChangesLink" rendered="#{bookListController.isEditorMode}" action="#{bookListController.updatebooklist()}" value="#{messages.Save}">
+                            </h:commandButton>
+                            <h:commandButton immediate="true" id="cancelChangesLink" rendered="#{bookListController.isEditorMode}" action="#{bookListController.cancleBookEditing()}" value="#{messages.Cancel}">
+                            </h:commandButton>
+                        </f:ajax>
                     </h:panelGroup>
 
-                    <h:dataTable id="tableOfBooks" value="#{bookListController.currentBookList}" var="book" cellspacing="10px" columnClasses="col1, col2, col3">
+                    <h:dataTable id="tableOfBooks" value="#{bookListController.pager.list}" var="book" cellspacing="10px" columnClasses="col1, col2, col3">
                         <h:column>
-                            <h:outputLink value="#{request.contextPath}/PdfReader">
-                                <h:graphicImage alt="#{messages.book_cover}" value="/ImageShower?bookId=#{book.id}" width="120px" height="160px"/>
+                            <h:outputLink value="#{request.contextPath}/PdfReader" target="_blank">
+                                <h:graphicImage alt="#{messages.book_cover}" value="/ImageShower?index=#{bookListController.row}" width="120px" height="160px" transient="true">
+                                    <!--   <f:param name="index" value=""/>
+                                       <f:param name="bookId" value=""/>-->
+                                </h:graphicImage>
                                 <f:param name="book" value="#{book.id}"/>
                                 <f:param name="action" value="read"/>
                                 <f:param name="bookName" value="#{book.name}"/>
@@ -57,13 +58,21 @@
                                         <h:outputText value="#{messages.book_name}:" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
                                     </strong>
                                     <h:inputText value="#{book.name}" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
-                                </p>
-
+                                </p>                                                                                               
                                 <p>
                                     <strong>#{messages.author}: </strong>
-                                    <h:outputText value="#{book.author}" rendered="#{!book.isEditing}"/>
-                                    <h:inputText value="#{book.author}" styleClass="name_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
-                                </p>                           
+                                    <h:outputText value="#{book.author.fio}" rendered="#{!book.isEditing}"/>
+                                    <h:selectOneMenu value="#{book.author}" rendered="#{bookListController.isEditorMode and book.isEditing}" converter="#{authorController}">
+                                        <f:selectItems value="#{authorController.selectItems}"/>
+                                    </h:selectOneMenu>
+                                </p>                                      
+                                <p>
+                                    <strong>#{messages.genre}: </strong>
+                                    <h:outputText value="#{book.genre.name}" rendered="#{!book.isEditing}"/>
+                                    <h:selectOneMenu  value="#{book.genre}" rendered="#{bookListController.isEditorMode and book.isEditing}" converter="#{genreController}">
+                                        <f:selectItems value="${genreController.selectItems}"/>
+                                    </h:selectOneMenu>
+                                </p> 
                                 <p>
                                     <strong>#{messages.page_count}: </strong>
                                     <h:outputText value="#{book.pageCount} #{messages.pages}" rendered="#{!book.isEditing}"/>
@@ -71,13 +80,15 @@
                                 </p>
                                 <p>
                                     <strong>#{messages.publisher}: </strong>
-                                    <h:outputText value="#{book.publisher}" rendered="#{!book.isEditing}"/>
-                                    <h:inputText value="#{book.publisher}" styleClass="publisher_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                                    <h:outputText value="#{book.publisher.name}" rendered="#{!book.isEditing}"/>
+                                    <h:selectOneMenu  value="#{book.publisher}" rendered="#{bookListController.isEditorMode and book.isEditing}" converter="#{publisherController}">
+                                        <f:selectItems value="${publisherController.selectItems}"/> 
+                                    </h:selectOneMenu>
                                 </p>
                                 <p>
                                     <strong>#{messages.publish_year}: </strong>
-                                    <h:outputText value="#{book.publishDate} г." rendered="#{!book.isEditing}"/>
-                                    <h:inputText value="#{book.publishDate}" styleClass="publisher_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
+                                    <h:outputText value="#{book.publishYear} г." rendered="#{!book.isEditing}"/>
+                                    <h:inputText value="#{book.publishYear}" styleClass="publisher_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
                                 </p>
                                 <p>
                                     <strong>#{messages.isbn}: </strong> 
@@ -115,29 +126,33 @@
                             <h:selectBooleanCheckbox value="#{book.isEditing}" rendered="#{!bookListController.isEditorMode and request.isUserInRole('admin')}"/>
                         </h:column>
                     </h:dataTable>
+                    <h:outputText value="#{bookListController.row}"/>
+                    <h:outputText value="#{bookListController.row}"/>
+                    <h:outputText value="#{bookListController.row}"/>
+                    <h:outputText value="#{bookListController.row}"/>
                 </h:form>
 
             </ui:define>
             <ui:define name="pageNumbers">                                           
                 <h:form>
-                    <h:selectOneMenu id="booksAmountOnPageForm" value="#{bookListController.booksOnPage}" valueChangeListener="#{bookListController.changeBooksCountOnPage}">
+                    <h:selectOneMenu id="booksAmountOnPageForm" value="#{bookListController.pager.booksOnPage}" valueChangeListener="#{bookListController.changeBooksCountOnPage}">
                         <f:selectItem itemValue="5"/>
                         <f:selectItem itemValue="10"/>
                         <f:selectItem itemValue="15"/>
                         <f:selectItem itemValue="20"/>
                         <f:ajax event="change" execute="@form booksAmountOnPageForm" render="booksAmountOnPageForm :contentForm :pager1panelGroup :pager2panelGroup" onevent="showProgress"/>
-                    </h:selectOneMenu>
-                    <h:outputText value="#{messages.pager}"  rendered="#{bookListController.totalBooksCount>bookListController.booksOnPage}"/>
-                    <ui:repeat value="#{bookListController.pageNumbers}" var="p">
-                        <h:commandLink  rendered="#{bookListController.totalBooksCount>bookListController.booksOnPage}" value="#{p}" styleClass="#{p==bookListController.selectedPageNumber? 'selected_page':''}">
+                    </h:selectOneMenu>                    
+                    <h:outputText value="#{messages.pager}"  rendered="#{bookListController.pager.totalBooksCount>bookListController.pager.booksOnPage}"/>
+                    <ui:repeat value="#{bookListController.pager.pageNumbers}" var="p">
+                        <h:commandLink  rendered="#{bookListController.pager.totalBooksCount>bookListController.pager.booksOnPage}" value="#{p}" styleClass="#{p==bookListController.pager.selectedPageNumber? 'selected_page':''}">
                             <f:param name="page" value="#{p}"/>
-                            <f:ajax event="click" render=" :pager1panelGroup :pager2panelGroup :contentForm" listener="#{bookListController.fillBooksByPage()}" onevent="showProgress"/>
+                            <f:ajax event="click" render=" :pager1panelGroup :pager2panelGroup :contentForm :contentForm:tableOfBooks" listener="#{bookListController.fillBooksByPage()}" onevent="showProgress"/>
                         </h:commandLink>
                     </ui:repeat>
                 </h:form>                    
             </ui:define>
             <ui:define name="books_count">
-                <h:outputText id="booksCountOutputText" value="#{messages.found_books} #{bookListController.totalBooksCount}"/>
+                <h:outputText id="booksCountOutputText" value="#{messages.found_books} #{bookListController.pager.totalBooksCount}"/>
             </ui:define>
         </ui:composition>
     </h:body>

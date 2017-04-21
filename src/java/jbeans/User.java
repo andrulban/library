@@ -51,7 +51,7 @@ public class User implements Serializable {
 //            ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).logout();
 //            FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
             ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).login(username, password);            
-            return "books";
+            return "tobooksfromindex";
         } catch (ServletException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
             FacesContext context = FacesContext.getCurrentInstance();

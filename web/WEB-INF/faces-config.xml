@@ -12,7 +12,7 @@
     <navigation-rule>
         <from-view-id>/index.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>books</from-outcome>
+            <from-outcome>tobooksfromindex</from-outcome>
             <to-view-id>/pages/books.xhtml</to-view-id>
             <redirect />
         </navigation-case>

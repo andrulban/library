@@ -5,6 +5,7 @@
 package servlets;
 
 import controllers.BookListController;
+import db_hibernate.DBHelper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -33,14 +34,13 @@ public class PdfReader extends HttpServlet {
         OutputStream out = response.getOutputStream();
         try {
             
-            int id = Integer.valueOf(request.getParameter("book"));
+            long id = Long.valueOf(request.getParameter("book"));
             String action = request.getParameter("action");
             String bookName = request.getParameter("bookName");
             if (action.equals("download")) {
                 response.setHeader("Content-Disposition", "attachement; filename="+URLEncoder.encode(bookName, "UTF-8")+".pdf");
-            }
-            BookListController searchController = (BookListController) request.getSession(false).getAttribute("bookListController");            
-            byte[] content = searchController.getContent(id);
+            }          
+            byte[] content =DBHelper.getInstance().getContent(id);
             response.setContentLength(content.length);
             out.write(content);
         } catch (Exception ex) {

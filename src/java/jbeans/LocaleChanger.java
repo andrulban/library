@@ -20,9 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 @ManagedBean
 @SessionScoped
 
-public class LocaleChanger implements Serializable{
-    private Locale locale; 
-    
+public class LocaleChanger implements Serializable {
+
+    private Locale locale;
+
     public LocaleChanger() {
         locale = new Locale("en");
     }
@@ -30,12 +31,15 @@ public class LocaleChanger implements Serializable{
     public Locale getLocale() {
         return locale;
     }
-    public void changeLocale(String localeName) {        
+
+    public void changeLocale(String localeName) {
         locale = new Locale(localeName);
-        HttpServletRequest request =(HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        BookListController sc =(BookListController) request.getSession().getAttribute("bookListController");
-        if(sc!=null) {
-        sc.setButtonLocale(locale);}
-    }    
-    
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        BookListController sc = (BookListController) request.getSession().getAttribute("bookListController");
+        if (sc != null) {
+            sc.setRow();
+            sc.setButtonLocale(locale);
+        }
+    }
+
 }

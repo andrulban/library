@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>
+
+            <p:dialog modal="true" widgetVar="bookEditDialog" dynamic="true" resizable="false" header="#{messages.bookEdtion}" closable="false" closeOnEscape="false">
+
+
+
+                <p:panelGrid id="bookDetails" columns="2" columnClasses="col1, col2" styleClass="edit_book_table">
+
+                    <h:form id="formEditBook"  rendered="#{bookListController.isEditorMode or bookListController.isAddMode}" enctype="multipart/form-data">
+
+
+
+                        <p:panel id="imagePanel">
+
+                            <p:graphicImage id="bookImage" rendered="#{bookListController.isEditorMode}" style="float: left; margin-bottom: 5px;" value="#{imageController.defaultImage}" width="110" height="150"/>
+                            <p style="margin: 0 0 5px 5px;">
+                                <h:outputText value="#{messages.upload_image}" style="padding: 0px 5px;"/>
+                                <p:fileUpload id="imageUpload" mode ="simple" value="#{imageController.file}" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"  update="bookNewImage messages" sizeLimit="#{imageController.imageMaxSize}" multiple="false"/>                            
+                            </p>
+                            <p style="margin: 0 0 5px 5px;">
+                                <h:outputText value="#{messages.upload_pdf}" style="padding: 0px 5px;"/>
+                                <p:fileUpload id="pdfUpload" label="#{messages.upload_pdf}" mode ="simple" allowTypes="/(\.|\/)(pdf)$/" value="#{contentController.file}"  update="bookNewImage messages" multiple="false"/>                            
+                            </p>
+
+
+                        </p:panel>
+
+
+
+                        <p:panel>
+
+                            <p:outputLabel value="#{messages.book_name}:" styleClass="edit-title"/>
+
+
+                            <p:inputText style="float: left; margin: 0 0 5px 5px;" id="inputBookName" value="#{bookListController.selectedBook.name}" size="60"/>
+
+
+                            <p:outputLabel value="#{messages.author}:" styleClass="edit-title"/>
+
+
+                            <h:selectOneMenu style="float: left; margin: 0 0 5px 5px;" value="#{bookListController.selectedBook.author}" converter="#{authorController}">
+                                <f:selectItems value="${authorController.selectItems}"/>
+                            </h:selectOneMenu>
+
+                            <p:outputLabel value="#{messages.genre}:" styleClass="edit-title"/>
+
+                            <h:selectOneMenu style="float: left; margin: 0 0 5px 5px;"   value="#{bookListController.selectedBook.genre}" converter="#{genreController}">
+                                <f:selectItems value="${genreController.selectItems}"/>
+                            </h:selectOneMenu>
+
+                            <p:outputLabel value="#{messages.publisher}:" styleClass="edit-title"/>
+
+                            <h:selectOneMenu style="float: left; margin: 0 0 5px 5px;"  value="#{bookListController.selectedBook.publisher}" converter="#{publisherController}">
+                                <f:selectItems value="${publisherController.selectItems}"/>
+                            </h:selectOneMenu>
+
+                            <p:outputLabel value="#{messages.publish_year}:" styleClass="edit-title"/>
+
+                            <p:inputMask id="inputPublishYear" value="#{bookListController.selectedBook.publishYear}"  maxlength="4" styleClass="edit-field" placeholder="_" mask="9999" style="float: left; margin: 0 0 5px 5px;"/>
+                            
+                            <p:outputLabel value="#{messages.isbn}:" styleClass="edit-title"/>
+
+                            <p:inputText style="float: left; margin: 0 0 5px 5px;" id="inputIsbn" value="#{bookListController.selectedBook.isbn}"/>
+
+                            <p:outputLabel value="#{messages.page_count}:" styleClass="edit-title"/>
+
+                            <p:inputText style="float: left; margin: 0 0 5px 5px;" id="inputPageCount" value="#{bookListController.selectedBook.pageCount}" />  
+
+                            <p:outputLabel value="#{messages.book_description}:" styleClass="edit-title"/>
+
+                            <p:panel styleClass="descr-text">
+                                <p:inputTextarea id="inputDescr" value="#{bookListController.selectedBook.descr}" cols="60" rows="20" maxlength="1500" counter="counter" counterTemplate="#{messages.letters_left} {0}"/>
+                                <h:outputText id="counter" />  
+                            </p:panel>        
+
+                            <p:commandButton rendered="#{bookListController.isEditorMode}" styleClass="button-update" process="@all" value="Save" update=":bookDetails :contentForm:tableOfBooks :booksCountOutputText :growlMessage" ajax="false">
+                                <f:actionListener binding="#{imageController.upload()}"/>
+                                <f:actionListener binding="#{contentController.upload()}"/>
+                                <f:actionListener binding="#{bookListController.updatebooklist()}"/>
+                            </p:commandButton>
+                            <p:commandButton rendered="#{bookListController.isAddMode}" styleClass="button-update" process="@all" value="Save" update=":bookDetails :contentForm:tableOfBooks :booksCountOutputText :growlMessage" ajax="false">
+                                <f:actionListener binding="#{imageController.upload()}"/>
+                                <f:actionListener binding="#{contentController.upload()}"/>
+                                <f:actionListener binding="#{bookListController.addBook()}"/>
+                            </p:commandButton>
+                            <p:commandButton process="@form" action="#{bookListController.cancelModes()}" value="Cancel" immediate="true" global="false" ajax="false"/>    
+
+                        </p:panel>
+
+                    </h:form>
+
+
+                </p:panelGrid>
+
+            </p:dialog>
+
+        </ui:composition>
+    </h:body>
+</html>
+

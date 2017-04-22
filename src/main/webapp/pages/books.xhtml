@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title></title>
+    </h:head>
+    <h:body>
+        <ui:composition template="/templates/aFullPage.xhtml">
+
+            <ui:define name="title">  
+                #{messages.index_title}
+            </ui:define>
+
+            <ui:define name="content">
+
+                
+
+
+
+                <h:form id="contentForm">                                                                                     
+
+                    <p:dataGrid id="tableOfBooks" columns="2" value="#{bookListController.bookListDataModel}" var="book" lazy="true" paginator="true" emptyMessage="" paginatorPosition="bottom"
+                                styleClass="books_list" rows="4" paginatorAlwaysVisible="false" paginatorTemplate="{RowsPerPageDropdown} {PageLinks}" rowsPerPageTemplate="4,8,10,20" binding="#{bookListController.dataGridBooks.dataGrid}">
+
+
+                        <div class="item">
+                            <h:outputLink styleClass="content_link" value="#{request.contextPath}/PdfReader" target="_blank">
+                                <p:graphicImage alt="#{messages.book_cover}" value="/ImageShower?index=#{bookListController.pager.rowIndex}" width="100" height="147" cache="false"/> 
+                                <f:param name="book" value="#{book.id}"/>
+                                <f:param name="action" value="read"/>
+                                <f:param name="bookName" value="#{book.name}"/>
+                            </h:outputLink>
+
+
+
+
+                            <div class="info">
+
+                                <div class="book_name">  
+                                    <h:outputLink   styleClass="title" value="#{request.contextPath}/PdfReader" rendered="#{!book.isEditing}">
+                                        #{book.name}
+                                        <f:param name="book" value="#{book.id}"/>
+                                        <f:param name="action" value="read"/>
+                                        <f:param name="bookName" value="#{book.name}"/>
+                                    </h:outputLink>
+                                </div>
+                                <span>#{book.author}</span>
+                                <p><strong>#{messages.page_count}:</strong> #{book.pageCount}</p>
+                                <p><strong>#{messages.publisher}</strong> #{book.publisher}</p>
+                                <p><strong>#{messages.publish_year}</strong> #{book.publishYear} г.</p>
+                                <p><strong>#{messages.isbn}</strong> #{book.isbn}</p>
+
+                            </div>
+
+
+                            <h:outputLink styleClass="mr" value="#{request.contextPath}/PdfReader" target="_blank">
+                                <h:outputText styleClass="read" value="#{messages.read}"/>
+                                <f:param name="book" value="#{book.id}"/>
+                                <f:param name="action" value="read"/>
+                                <f:param name="bookName" value="#{book.name}"/>
+                            </h:outputLink>
+
+                            <h:outputLink styleClass="mr" value="#{request.contextPath}/PdfReader" target="_blank">
+                                <h:outputText styleClass="download" value="#{messages.download}"/>
+                                <f:param name="book" value="#{book.id}"/>
+                                <f:param name="action" value="download"/>
+                                <f:param name="bookName" value="#{book.name}"/>
+                            </h:outputLink>
+
+                            <p:commandLink styleClass="mr" actionListener="#{bookListController.switchEditMode}" title="#{messages.Edit}" update=":bookDetails" rendered="#{request.isUserInRole('admin')}">  
+                                <p class="edit">#{messages.Edit}</p>
+                                <f:setPropertyActionListener value="#{book}"  target="#{bookListController.selectedBook}" />  
+                            </p:commandLink> 
+
+
+                            <p:commandLink styleClass="delete-button" title="#{messages.delete}" type="button" onclick="PF('dlgDeleteBook').show()" rendered="#{request.isUserInRole('admin')}">  
+                                <p class="delete">#{messages.delete}</p>
+                                <f:setPropertyActionListener value="#{book}"  target="#{bookListController.selectedBook}" /> 
+                            </p:commandLink>
+
+                        </div>
+                    </p:dataGrid>                     
+                    <p:confirmDialog widgetVar="dlgDeleteBook" message="#{messages.delete_confirm}?" width="300px" styleClass="dialog_delete">    
+                        <h:panelGrid columns="2" style="margin:0 auto; width:150px;">
+                            <p:commandButton id="btnDeletedBook" value="#{messages.yes}" action="#{bookListController.deleteBook}" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":contentForm:tableOfBooks :booksCountOutputText :growlMessage" onclick="PF('dlgDeleteBook').hide()" ajax="false"/>  
+                            <p:commandButton value="#{messages.no}" styleClass="ui-confirmdialog-no" icon="ui-icon-close" onclick="PF('dlgDeleteBook').hide()" type="button" ajax="false"/>       
+                        </h:panelGrid>
+                    </p:confirmDialog> 
+                </h:form>                  
+            </ui:define>            
+            
+            <ui:define name="books_count">
+
+                <div class="box-sh">
+
+                    <h1><p:outputLabel id="booksCountOutputText" value="#{messages.found_books}  #{bookListController.pager.totalBooksCount}" /></h1>
+
+
+
+                    <h:form id="add-action" rendered="#{request.isUserInRole('admin')}">
+                        <p:commandLink  actionListener="#{bookListController.switchAddMode}" ajax="false">
+                            <h:outputText value="#{messages.add_book}" title="#{messages.add_book}"/>
+                        </p:commandLink>
+                    </h:form>
+
+
+                </div>
+
+            </ui:define>
+            
+        </ui:composition>
+    </h:body>
+</html>
+
+

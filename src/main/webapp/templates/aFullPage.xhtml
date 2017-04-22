@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <f:view locale="#{localeChanger.locale}">
+        <h:head>
+            <title><ui:insert name="title"/></title>
+            <link rel="shortcut icon" href="/03_Library_1/favicon.ico"/>
+        </h:head>
+        <h:body>
+
+            <f:facet name="last">
+                <h:outputStylesheet library="css" name="main.css" />
+            </f:facet>
+
+            <p:ajaxStatus id="ajaxStatusPanel">
+                <f:facet name="start">
+                    <div class="loading_wrapper">
+                        <p>#{messages.loading}...</p>
+                    </div>
+                </f:facet>
+            </p:ajaxStatus>
+
+
+            <div class="header">
+                <ui:include src="/templates/header.xhtml"/>                    
+            </div>
+
+            <div id="wrap">
+                <ui:include src="/templates/logo.xhtml"/>
+                <ui:include src="/templates/search.xhtml"/>
+                <ui:include src="/templates/letters.xhtml"/>
+
+                <div class="content">
+                    <ui:include src="/templates/sideBar.xhtml"/>
+
+                    <ui:include src="/templates/bookEdition.xhtml"/>
+
+                    <div class="right-content">
+                        <ui:insert name="books_count"/> 
+                        <p:growl life="3000" id="growlMessage" globalOnly="true"/>                         
+                        <ui:insert name="content"/>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="footer_blank"></div>
+
+            <div class="footer">
+                <ui:insert name="footer">
+                    <ui:include src="/templates/footer.xhtml"/>
+                </ui:insert>
+            </div>
+
+        </h:body>
+    </f:view>
+</html>
+

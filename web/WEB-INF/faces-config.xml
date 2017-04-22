@@ -7,8 +7,9 @@
         <resource-bundle>
             <base-name>propertiesFiles.messages</base-name>
             <var>messages</var>
-        </resource-bundle>
+        </resource-bundle>     
     </application>
+    
     <navigation-rule>
         <from-view-id>/index.xhtml</from-view-id>
         <navigation-case>
@@ -36,6 +37,33 @@
             <from-outcome>books</from-outcome>
             <to-view-id>/pages/books.xhtml</to-view-id>
             <redirect />
+        </navigation-case>
+    </navigation-rule>
+    <factory>
+        <exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
+    </factory>
+    <navigation-rule>
+        <from-view-id>/errorpages/error_404.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>books</from-outcome>
+            <to-view-id>/pages/books.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/errorpages/error_500.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>books</from-outcome>
+            <to-view-id>/pages/books.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/errorpages/expired.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>index</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
         </navigation-case>
     </navigation-rule>
 </faces-config>

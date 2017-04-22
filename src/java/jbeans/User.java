@@ -16,8 +16,6 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-
-
 @SessionScoped
 @ManagedBean
 
@@ -27,6 +25,11 @@ public class User implements Serializable {
     private String password;
 
     public User() {
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -50,7 +53,13 @@ public class User implements Serializable {
 
 //            ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).logout();
 //            FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-            ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).login(username, password);            
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            if (request.getUserPrincipal() == null || (request.getUserPrincipal() != null && !request.getUserPrincipal().getName().equals(username))) {
+                request.logout();
+                request.login(username, password);
+            }
+
+            // ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).login(username, password);
             return "tobooksfromindex";
         } catch (ServletException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
@@ -81,5 +90,13 @@ public class User implements Serializable {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
         return result;
+    }
+
+    public String goHome() {
+        return "index";
+    }
+
+    public String goToBooks() {
+        return "books";
     }
 }

@@ -35,10 +35,9 @@ public class LocaleChanger implements Serializable {
     public void changeLocale(String localeName) {
         locale = new Locale(localeName);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        BookListController sc = (BookListController) request.getSession().getAttribute("bookListController");
-        if (sc != null) {
-            sc.setRow();
-            sc.setButtonLocale(locale);
+        BookListController bl = (BookListController) request.getSession().getAttribute("bookListController");
+        if (bl != null) {
+            bl.setButtonLocale(locale);
         }
     }
 

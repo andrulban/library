@@ -143,7 +143,6 @@ public class HibernateSession implements Filter {
 
 
 
-
 //        String path = wrappedRequest.getRequestURI().substring(wrappedRequest.getContextPath().length());
 
 //        if (!path.startsWith(ResourceHandler.RESOURCE_IDENTIFIER)) {
@@ -168,10 +167,9 @@ public class HibernateSession implements Filter {
 
             doAfterProcessing(wrappedRequest, wrappedResponse);
 
-//            if (!path.startsWith(ResourceHandler.RESOURCE_IDENTIFIER)) {
             sessionFactory.getCurrentSession().getTransaction().commit();
+            sessionFactory.getCurrentSession().close();
             System.out.println("close session for " + wrappedRequest.getRequestURI());
-//            }
 
 
 
@@ -192,6 +190,7 @@ public class HibernateSession implements Filter {
             e.printStackTrace();
             if (sessionFactory.getCurrentSession().getTransaction().isActive()) {
                 sessionFactory.getCurrentSession().getTransaction().rollback();
+                sessionFactory.getCurrentSession().close();
             }
         }
     }

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -55,6 +56,7 @@ public class GenreController implements Serializable, Converter {
     public String getAsString(FacesContext context, UIComponent component, Object value) {
         return ((Genre)value).getId().toString();
     }
+    
     
     
 }

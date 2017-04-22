@@ -1,29 +1,36 @@
 package jbeans;
 
-import java.util.ArrayList;
+import entity_hibernate.Book;
 import java.util.List;
 
-public class Pager<T> {
+public class Pager {
 
-    private int selectedPageNumber = 1;
-    private int booksOnPage = 5;
     private long totalBooksCount;
-    
-    private List<T> list;
+    private Book selectedBook;
+    private int rowIndex;
+    private int from;
+    private int to;
+    private List<Book> list;
+    private static Pager pager;
 
-    public int getFrom() {
-        return selectedPageNumber * booksOnPage - booksOnPage;
+    private Pager() {
+
+    }    
+
+    public static Pager getInstace() {
+        if(pager==null) {
+            return pager=new Pager();
+        }
+        else {
+            return pager;
+        }
     }
-
-    public int getTo() {
-        return booksOnPage;
-    }
-
-    public List<T> getList() {
+    public List<Book> getList() {
         return list;
     }
 
-    public void setList(List<T> list) {
+    public void setList(List<Book> list) {
+        rowIndex=-1;
         this.list = list;
     }
 
@@ -35,40 +42,36 @@ public class Pager<T> {
         return totalBooksCount;
     }
 
-    public void setSelectedPageNumber(int selectedPageNumber) {
-        this.selectedPageNumber = selectedPageNumber;
+    public Book getSelectedBook() {
+        return selectedBook;
     }
 
-    public int getSelectedPageNumber() {
-        return selectedPageNumber;
-    }
-    private List<Integer> pageNumbers = new ArrayList<Integer>();
-
-    public List<Integer> getPageNumbers() {// кол-во страниц для постраничности
-
-        int pageCount = 0;
-
-        if (totalBooksCount % booksOnPage == 0) {
-            pageCount = booksOnPage > 0 ? (int) (totalBooksCount / booksOnPage) : 0;
-        } else {
-            pageCount = booksOnPage > 0 ? (int) (totalBooksCount / booksOnPage) + 1 : 0;
-        }
-
-        pageNumbers.clear();
-
-        for (int i = 1; i <= pageCount; i++) {
-            pageNumbers.add(i);
-        }
-
-        return pageNumbers;
+    public void setSelectedBook(Book selectedBook) {
+        this.selectedBook = selectedBook;
     }
 
-    public int getBooksOnPage() {
-        return booksOnPage;
+    public int getRowIndex() {
+        return ++rowIndex;
     }
 
-    public void setBooksOnPage(int booksCountOnPage) {
-        this.booksOnPage = booksCountOnPage;
+    public void setRowIndex(int rowIndex) {
+        this.rowIndex=rowIndex;
+    }
+
+    public int getFrom() {
+        return from;
+    }
+
+    public void setFrom(int from) {
+        this.from = from;
+    }
+
+    public int getTo() {
+        return to;
+    }
+
+    public void setTo(int to) {
+        this.to = to;
     }
 
 }

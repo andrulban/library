@@ -4,7 +4,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
@@ -15,20 +16,20 @@
                     <p>
                         <h:commandLink action="#{localeChanger.changeLocale('pl')}">
                             <h:graphicImage library="images" name="pl.png" title="#{messages.polish}"/>
-                            <f:ajax render=":login_form welcome_title" execute="@form" disabled="#{fn:contains(request.requestURL, 'books.xhtml')}"/>
-                            <f:ajax render="@all" execute="@form" disabled="#{not fn:contains(request.requestURL, 'books.xhtml')}"/>
+                            <p:ajax update=":login_form index_input welcome_title" disabled="#{fn:contains(request.requestURL, 'books.xhtml')}"/>
+                            <p:ajax update="@all" disabled="#{not fn:contains(request.requestURL, 'books.xhtml')}"/>
                         </h:commandLink>
 
                         <h:commandLink action="#{localeChanger.changeLocale('en')}">
                             <h:graphicImage library="images" name="eng.png" title="#{messages.english}"/>
-                            <f:ajax render=":login_form welcome_title" execute="@form" disabled="#{fn:contains(request.requestURL, 'books.xhtml')}"/>
-                            <f:ajax render="@all" execute="@form" disabled="#{not fn:contains(request.requestURL, 'books.xhtml')}"/>
+                            <p:ajax update=":login_form index_input welcome_title" disabled="#{fn:contains(request.requestURL, 'books.xhtml')}"/>
+                            <p:ajax update="@all" disabled="#{not fn:contains(request.requestURL, 'books.xhtml')}"/>
                         </h:commandLink>
 
                         <h:commandLink action = "#{localeChanger.changeLocale('ru')}">
                             <h:graphicImage library="images" name="rus.png" title="#{messages.russian}"/>
-                            <f:ajax render=":login_form welcome_title" execute="@form" disabled="#{fn:contains(request.requestURL, 'books.xhtml')}"/>
-                            <f:ajax render="@all" execute="@form" disabled="#{not fn:contains(request.requestURL, 'books.xhtml')}"/>
+                            <p:ajax update=":login_form index_input welcome_title" disabled="#{fn:contains(request.requestURL, 'books.xhtml')}"/>
+                            <p:ajax update="@all" disabled="#{not fn:contains(request.requestURL, 'books.xhtml')}"/>
                         </h:commandLink>
 
 

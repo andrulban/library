@@ -23,6 +23,9 @@
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
+        <cookie-config>
+            <name>SESSIONID</name>
+        </cookie-config>
     </session-config>
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
@@ -59,4 +62,21 @@
         <description/>
         <role-name>user</role-name>
     </security-role>
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>library</param-value>
+    </context-param>
+    
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/errorpages/expired.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/errorpages/error_404.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/errorpages/error_500.xhtml</location>
+    </error-page>
 </web-app>

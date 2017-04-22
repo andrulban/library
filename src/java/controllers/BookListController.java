@@ -27,99 +27,122 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import entity_hibernate.Book;
+import javax.faces.application.FacesMessage;
 import jbeans.ConnectionDB;
+import jbeans.DataGridBooks;
 import jbeans.Pager;
+import models.BookListDataModel;
+import org.primefaces.component.datatable.DataTable;
+import org.primefaces.context.RequestContext;
 
 @ManagedBean(eager = true)
 @SessionScoped
 public class BookListController implements Serializable {
 
+   // private DataTable dataTable;
+    private DataGridBooks dataGrid;
+    DBHelper dBHelper = DBHelper.getInstance();
     private int selectedGenreId; // выбранный жанр
     private char selectedLetter; // выбранная буква алфавита
     private HashMap<String, SearchType> searchList = new HashMap<>();
+    BookListDataModel bookListDataModel;
     private SearchType searchType;
     private String searchString;
     private boolean isEditorMode = false;
-    Pager<Book> pager = new Pager<>();
-    private transient int row = -1;
+    Pager pager = Pager.getInstace();
+    Book selectedBook;
 
     public BookListController() {
-        fillBooksAll();
+        dataGrid=new DataGridBooks();
+        bookListDataModel = new BookListDataModel();
         ResourceBundle bundle = ResourceBundle.getBundle("propertiesFiles.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
         searchList.put(bundle.getString("author"), SearchType.AUTHOR);
         searchList.put(bundle.getString("title"), SearchType.TITLE);
     }
 
 //<editor-fold defaultstate="collapsed" desc="Filling of bookList by deffrent types">
-    public void fillBooksByPage() {
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        pager.setSelectedPageNumber(Integer.valueOf(params.get("page")));
-        isEditorMode = false;
-        row = -1;
-        cancleBookEditing();
-        DBHelper.getInstance().refreshList();
-
-    } //Nado bydet ispravit
-
     public void fillBooksByGenre() {
         isEditorMode = false;
         cancleBookEditing();
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        selectedGenreId = Integer.valueOf(params.get("genre_id"));
-        submitValues(' ', 1, Integer.valueOf(params.get("genre_id")), false, false, true, -1);
-        DBHelper.getInstance().getBooksByGenre((long) selectedGenreId,pager);
+        submitValues(' ', Integer.valueOf(params.get("genre_id")), false, false, true);
+        dBHelper.getBooksByGenre((long) selectedGenreId);
     }
 
     public void fillBooksByLetter() {
         isEditorMode = false;
         cancleBookEditing();
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        selectedLetter = params.get("letter").charAt(0);
-        submitValues(selectedLetter, 1, -1, false, false, true, -1);
-        DBHelper.getInstance().getBooksByLetter(selectedLetter, pager);
+        submitValues(params.get("letter").charAt(0), -1, false, false, true);
+        dBHelper.getBooksByLetter(selectedLetter);
     }
 
     public void fillBooksBySearch() {
-        submitValues(' ', 1, -1, false, false, true, -1);
+        submitValues(' ', -1, false, false, true);
         if (searchString.trim().length() == 0) {
             fillBooksAll();
             return;
         }
 
         if (searchType == SearchType.AUTHOR) {
-            DBHelper.getInstance().getBooksByAuthor(searchString, pager);
+            dBHelper.getBooksByAuthor(searchString);
         } else if (searchType == SearchType.TITLE) {
-            DBHelper.getInstance().getBooksByName(searchString, pager);
+            dBHelper.getBooksByName(searchString);
         }
     }
 
     private void fillBooksAll() {
-        submitValues(' ', 1, -1, false, false, false, -1);
-        DBHelper.getInstance().getAllBooks(pager);
+        submitValues(' ', -1, false, false, false);
+        dBHelper.getAllBooks();
     }
 //</editor-fold>
 
     public void updatebooklist() {
-        DBHelper.getInstance().update();
+        dBHelper.update(selectedBook);
         cancleBookEditing();
-        DBHelper.getInstance().refreshList();
+        dBHelper.populateList();
+
+        RequestContext.getCurrentInstance().execute("PF('dlgEditBook').hide()");
+
+        ResourceBundle bundle = ResourceBundle.getBundle("propertiesFiles.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(bundle.getString("updated")));
+        dataGrid.getDataTable().setFirst(calcSelectedPage());
+    }
+
+    public void deleteBook() {
+        dBHelper.deleteBook(selectedBook);
+        dBHelper.populateList();
+
+        ResourceBundle bundle = ResourceBundle.getBundle("propertiesFiles.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(bundle.getString("deleted")));
+        dataGrid.getDataTable().setFirst(calcSelectedPage());
 
     }
 
     public void cancleBookEditing() {
-        row = -1;
         isEditorMode = false;
-        for (Book book : pager.getList()) {
-            book.setIsEditing(false);
-        }
     }
 
-    private void submitValues(Character selectedLetter, int selectedPageNumber, int selectedGenreId, boolean isFromPages, boolean isEditorMode, boolean cancelBookEditing, int row) {
+    private int calcSelectedPage() {
+        int page = dataGrid.getDataTable().getPage();// текущий номер страницы (индексация с нуля)
+
+        int leftBound = pager.getTo() * (page - 1);
+        int rightBound = pager.getTo() * page;
+
+        boolean goPrevPage = pager.getTotalBooksCount() > leftBound & pager.getTotalBooksCount() <= rightBound;
+
+        if (goPrevPage) {
+            page--;
+        }
+
+        return (page > 0) ? page * pager.getTo() : 0;
+    }
+
+    private void submitValues(Character selectedLetter, int selectedGenreId, boolean isFromPages, boolean isEditorMode, boolean cancelBookEditing) {
         this.selectedLetter = selectedLetter;
-        pager.setSelectedPageNumber(selectedPageNumber);
         this.selectedGenreId = selectedGenreId;
         this.isEditorMode = isEditorMode;
-        this.row = row;
+        dataGrid.getDataTable().setFirst(0);
         if (cancelBookEditing) {
             cancleBookEditing();
         }
@@ -127,12 +150,9 @@ public class BookListController implements Serializable {
     }
 
     public void changeBooksCountOnPage(ValueChangeEvent e) {
-        pager.setBooksOnPage(Integer.valueOf(e.getNewValue().toString()).intValue());
         isEditorMode = false;
         cancleBookEditing();
-        pager.setSelectedPageNumber(1);
-        row = -1;
-        DBHelper.getInstance().refreshList();
+        dBHelper.populateList();
     }
 
     public void setButtonLocale(Locale locale) {
@@ -147,104 +167,25 @@ public class BookListController implements Serializable {
         return letters;
     }
 
-    private void fillPageNumbers(long totalBooksCount, int booksCountOnPage) {
-
-        int pageCount = totalBooksCount > 0 ? (int) (totalBooksCount / booksCountOnPage) : 0;
-        if ((totalBooksCount % booksCountOnPage) > 0) {
-            pageCount++;
-        }
-        pager.getPageNumbers().clear();
-        for (int i = 1; i <= pageCount; i++) {
-            pager.getPageNumbers().add(i);
-        }
-
-    }
-
     public void switchEditorMode() {
-        row = -1;
         isEditorMode = !isEditorMode;
     }
 
-//<editor-fold defaultstate="collapsed" desc="Books's content and image taking by sql from DB">
-    public byte[] getContent(int id) {
-        Statement stmt = null;
-        ResultSet rs = null;
-        Connection conn = null;
-
-        byte[] content = null;
-        try {
-            conn = DriverManager.getConnection(ConnectionDB.url, ConnectionDB.user, ConnectionDB.password);
-            stmt = conn.createStatement();
-
-            rs = stmt.executeQuery("select content from book where id=" + id);
-            while (rs.next()) {
-                content = rs.getBytes("content");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Book.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (rs != null) {
-                    rs.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(Book.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        return content;
+    public void cancelEditMode() {
+        isEditorMode = false;
+        RequestContext.getCurrentInstance().execute("PF('bookEditDialog').hide();");
 
     }
 
-    public byte[] getImage(int id) {
-        Statement stmt = null;
-        ResultSet rs = null;
-        Connection conn = null;
+    public void switchEditMode() {
+        isEditorMode = true;
+        RequestContext.getCurrentInstance().execute("PF('bookEditDialog').show();");
 
-        byte[] image = null;
-
-        try {
-            conn = DriverManager.getConnection(ConnectionDB.url, ConnectionDB.user, ConnectionDB.password);
-            stmt = conn.createStatement();
-
-            rs = stmt.executeQuery("select image from book where id=" + id);
-            while (rs.next()) {
-                image = rs.getBytes("image");
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Book.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (rs != null) {
-                    rs.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(Book.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        return image;
     }
-//</editor-fold>
-
+    
+    
 //<editor-fold defaultstate="collapsed" desc="Getters and setters">
+
     public SearchType getSearchType() {
         return searchType;
     }
@@ -289,21 +230,50 @@ public class BookListController implements Serializable {
         return isEditorMode;
     }
 
-    public Pager<Book> getPager() {
+    public Pager getPager() {
         return pager;
     }
 
-    public void setPager(Pager<Book> pager) {
+    public void setPager(Pager pager) {
         this.pager = pager;
     }
 
-    public int getRow() {
-        row += 1;
-        return row;
+    public BookListDataModel getBookListDataModel() {
+        return bookListDataModel;
     }
 
-    public void setRow() {
-        row = -1;
+    public void setBookListDataModel(BookListDataModel bookListDataModel) {
+        this.bookListDataModel = bookListDataModel;
     }
-//</editor-fold>
+
+    public DBHelper getdBHelper() {
+        return dBHelper;
+    }
+
+    public void setdBHelper(DBHelper dBHelper) {
+        this.dBHelper = dBHelper;
+    }
+
+    public Book getSelectedBook() {
+        return selectedBook;
+    }
+
+    public void setSelectedBook(Book selectedBook) {
+        this.selectedBook = selectedBook;
+    }
+    
+
+ 
+   
+
+    public DataGridBooks getDataGrid() {        
+        return dataGrid; 
+    }
+
+    public void setDataGrid(DataGridBooks dataGrid) {
+        this.dataGrid = dataGrid;
+    }
+    
+     //</editor-fold>
+
 }

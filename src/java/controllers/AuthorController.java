@@ -16,6 +16,9 @@ import javax.faces.model.SelectItem;
 import comparator.ListComparator;
 import db_hibernate.DBHelper;
 import entity_hibernate.Author;
+import javax.faces.bean.ManagedProperty;
+import jbeans.Pager;
+import org.hibernate.type.descriptor.java.DataHelper;
 
 @ManagedBean(eager = false)
 @ApplicationScoped
@@ -25,10 +28,9 @@ public class AuthorController implements Serializable, Converter {
     private Map<Long,Author> map;
     private List<Author> list;
 
-
     public AuthorController() {
         map = new HashMap<Long, Author>();
-        list = DBHelper.getInstance().getAllAuthors();       
+        list = DBHelper.getInstance().getAllAuthors();
         Collections.sort(list, ListComparator.getInstance());
         
         for (Author author : list) {
@@ -55,6 +57,5 @@ public class AuthorController implements Serializable, Converter {
         return ((Author)value).getId().toString();
     }
 
-    
-
+  
 }

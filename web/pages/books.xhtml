@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title></title>
     </h:head>
@@ -13,39 +14,26 @@
                 #{messages.index_title}
             </ui:define>
             <ui:define name="content">
+                <p:growl life="3000" id="growlMessage" globalOnly="true"/> 
 
-                <h:form id="contentForm">
+                
 
-                    <h:panelGroup id="admin_tools" rendered="#{request.isUserInRole('admin')}">
-                        <f:ajax onevent="showProgress" execute="@form " render="@form :pager1panelGroup :pager2panelGroup :booksCountOutputText">
-                            <h:commandLink id="addBookLinc" rendered="#{!bookListController.isEditorMode}">
-                                <h:graphicImage library="images" name="add.jpg"/>
-                                <h:outputText value="#{messages.Add}"/>
-                            </h:commandLink>
-                            <h:commandLink id="editBookLink" rendered="#{!bookListController.isEditorMode and bookListController.pager.totalBooksCount>0}" action="#{bookListController.switchEditorMode()}">
-                                <h:graphicImage library="images" name="edit.jpg"/>
-                                <h:outputText value="#{messages.Edit}"/>
-                            </h:commandLink>
-                            <h:commandButton id="saveChangesLink" rendered="#{bookListController.isEditorMode}" action="#{bookListController.updatebooklist()}" value="#{messages.Save}">
-                            </h:commandButton>
-                            <h:commandButton immediate="true" id="cancelChangesLink" rendered="#{bookListController.isEditorMode}" action="#{bookListController.cancleBookEditing()}" value="#{messages.Cancel}">
-                            </h:commandButton>
-                        </f:ajax>
-                    </h:panelGroup>
 
-                    <h:dataTable id="tableOfBooks" value="#{bookListController.pager.list}" var="book" cellspacing="10px" columnClasses="col1, col2, col3">
-                        <h:column>
+
+                <h:form id="contentForm">                                                                                     
+
+                    <p:dataTable id="tableOfBooks" value="#{bookListController.bookListDataModel}" var="book" lazy="true" paginator="true" emptyMessage=""
+                                 styleClass="books_list" rows="5" paginatorAlwaysVisible="false" paginatorTemplate="{RowsPerPageDropdown} {PageLinks}" rowsPerPageTemplate="5,10,15,20" binding="#{bookListController.dataGrid.dataTable}">
+                        <p:column styleClass="col1">
                             <h:outputLink value="#{request.contextPath}/PdfReader" target="_blank">
-                                <h:graphicImage alt="#{messages.book_cover}" value="/ImageShower?index=#{bookListController.row}" width="120px" height="160px" transient="true">
-                                    <!--   <f:param name="index" value=""/>
-                                       <f:param name="bookId" value=""/>-->
-                                </h:graphicImage>
+                                <p:graphicImage alt="#{messages.book_cover}" value="/ImageShower?index=#{bookListController.pager.rowIndex}" width="160px" height="220px" cache="false">                                
+                                </p:graphicImage>
                                 <f:param name="book" value="#{book.id}"/>
                                 <f:param name="action" value="read"/>
                                 <f:param name="bookName" value="#{book.name}"/>
                             </h:outputLink>
-                        </h:column>
-                        <h:column>
+                        </p:column>
+                        <p:column styleClass="col2">
                             <div>
 
                                 <h3>
@@ -114,43 +102,37 @@
                                     </strong>
                                 </p>
                             </div>
-                        </h:column>
-                        <h:column>
+                        </p:column>
+                        <p:column styleClass="col3">
                             <div class="book_details">
                                 <p><strong>#{messages.book_description}</strong></p>
                                 <h:outputText value="#{book.descr}" rendered="#{!book.isEditing}"/>
                                 <h:inputTextarea value="#{book.descr}" styleClass="descr_edit" rendered="#{bookListController.isEditorMode and book.isEditing}"/>
                             </div>
-                        </h:column>
-                        <h:column>
-                            <h:selectBooleanCheckbox value="#{book.isEditing}" rendered="#{!bookListController.isEditorMode and request.isUserInRole('admin')}"/>
-                        </h:column>
-                    </h:dataTable>
-                    <h:outputText value="#{bookListController.row}"/>
-                    <h:outputText value="#{bookListController.row}"/>
-                    <h:outputText value="#{bookListController.row}"/>
-                    <h:outputText value="#{bookListController.row}"/>
-                </h:form>
+                        </p:column>
 
-            </ui:define>
-            <ui:define name="pageNumbers">                                           
-                <h:form>
-                    <h:selectOneMenu id="booksAmountOnPageForm" value="#{bookListController.pager.booksOnPage}" valueChangeListener="#{bookListController.changeBooksCountOnPage}">
-                        <f:selectItem itemValue="5"/>
-                        <f:selectItem itemValue="10"/>
-                        <f:selectItem itemValue="15"/>
-                        <f:selectItem itemValue="20"/>
-                        <f:ajax event="change" execute="@form booksAmountOnPageForm" render="booksAmountOnPageForm :contentForm :pager1panelGroup :pager2panelGroup" onevent="showProgress"/>
-                    </h:selectOneMenu>                    
-                    <h:outputText value="#{messages.pager}"  rendered="#{bookListController.pager.totalBooksCount>bookListController.pager.booksOnPage}"/>
-                    <ui:repeat value="#{bookListController.pager.pageNumbers}" var="p">
-                        <h:commandLink  rendered="#{bookListController.pager.totalBooksCount>bookListController.pager.booksOnPage}" value="#{p}" styleClass="#{p==bookListController.pager.selectedPageNumber? 'selected_page':''}">
-                            <f:param name="page" value="#{p}"/>
-                            <f:ajax event="click" render=" :pager1panelGroup :pager2panelGroup :contentForm :contentForm:tableOfBooks" listener="#{bookListController.fillBooksByPage()}" onevent="showProgress"/>
-                        </h:commandLink>
-                    </ui:repeat>
-                </h:form>                    
-            </ui:define>
+                        <p:column>
+                            <p:commandLink actionListener="#{bookListController.switchEditMode}" title="#{messages.Edit}" update=":formEditBook:bookDetails" >  
+                                <h:graphicImage library="images" name="edit.jpg" />
+                                <f:setPropertyActionListener value="#{book}"  target="#{bookListController.selectedBook}" />  
+                            </p:commandLink> 
+
+
+                            <p:commandLink title="#{messages.delete}" type="button" onclick="PF('dlgDeleteBook').show()" >  
+                                <h:graphicImage library="images" name="delete.gif" />
+                                <f:setPropertyActionListener value="#{book}"  target="#{bookListController.selectedBook}" /> 
+                            </p:commandLink>                              
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog widgetVar="dlgDeleteBook" message="#{messages.delete_confirm}?" width="300px" styleClass="dialog_delete">    
+                        <h:panelGrid columns="2" style="margin:0 auto; width:150px;">
+                            <p:commandButton id="btnDeletedBook" value="#{messages.yes}" action="#{bookListController.deleteBook}" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update=":contentForm:tableOfBooks :booksCountOutputText :growlMessage" onclick="PF('dlgDeleteBook').hide()" ajax="false"/>  
+                            <p:commandButton value="#{messages.no}" styleClass="ui-confirmdialog-no" icon="ui-icon-close" onclick="PF('dlgDeleteBook').hide()" type="button" ajax="false"/>       
+                        </h:panelGrid>
+                    </p:confirmDialog>  
+                   
+                </h:form>                
+            </ui:define>            
             <ui:define name="books_count">
                 <h:outputText id="booksCountOutputText" value="#{messages.found_books} #{bookListController.pager.totalBooksCount}"/>
             </ui:define>

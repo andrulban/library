@@ -8,13 +8,13 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="author" class="entity_hibernate.Author" fetch="select" >
+        <many-to-one name="author" class="entity_hibernate.Author" fetch="join" lazy="false">
             <column name="author_id" not-null="true" />
         </many-to-one>
-        <many-to-one name="genre" class="entity_hibernate.Genre" fetch="select" >
+        <many-to-one name="genre" class="entity_hibernate.Genre" fetch="join" lazy="false">
             <column name="genre_id" not-null="true" />
         </many-to-one>
-        <many-to-one name="publisher" class="entity_hibernate.Publisher" fetch="select" >
+        <many-to-one name="publisher" class="entity_hibernate.Publisher" fetch="join" lazy="false">
             <column name="publisher_id" not-null="true" />
         </many-to-one>
         <property name="name" type="string">

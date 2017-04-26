@@ -1,6 +1,7 @@
 entity_hibernate/Author.class
 models/BookListDataModel.class
 controllers/AuthorController.class
+jbeans/Main.class
 entity_hibernate/Publisher.class
 jbeans/Pager.class
 entity/ext/PublisherExt.class

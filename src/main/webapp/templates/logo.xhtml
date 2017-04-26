@@ -14,7 +14,7 @@
                 <div class="clear"></div>
                 
                 <div class="logo">
-                    <a href="#">
+                    <a href="http://localhost:8080/Library/pages/books.xhtml">
                         <h:graphicImage library="images" name="libraryLogo.png"/>
                     </a>
                 </div>
@@ -23,15 +23,13 @@
                     <h:form>
                         <ul>
                             <li><p:commandLink action="#{bookListController.fillBooksByFreshness()}" ajax="false">#{messages.newShit}</p:commandLink></li>
-
-                            <li><p:commandLink type="button" onclick="CF('dlgAbout').show()" value="#{messages.about}" global="false"/></li>    
-                            <li><a href="#">#{messages.contacts}</a></li>
-                            <li><a href="#">#{messages.team}</a></li>
+                            <li><a href="../links/about.xhtml">#{messages.about}</a></li>
+                            <li><a href="../links/contacts.xhtml">#{messages.contacts}</a></li>
                         </ul>
                     </h:form>                
                 </div>
 
-                <a class="feedback" href="tytarchuk.andrey@gmail.com">#{messages.feedback}</a>
+                <a class="feedback" href="../links/feedback.xhtml">#{messages.feedback}</a>
 
                 <div class="clear"></div>
 

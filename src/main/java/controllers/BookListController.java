@@ -239,19 +239,19 @@ public class BookListController implements Serializable {
     }
 
     public Character[] getRussianLetters() {
-        Character [] letters = null;
-        if(FacesContext.getCurrentInstance().getELContext().getLocale().getISO3Language().equals("rus")) {
-        letters = new Character[]{'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я',};
-        }
-        else if(FacesContext.getCurrentInstance().getELContext().getLocale().getISO3Language().equals("eng")) {
-            letters = new Character[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-        }
-        else if(FacesContext.getCurrentInstance().getELContext().getLocale().getISO3Language().equals("pol")) {
-            letters = new Character[] {'A','Ą','B','C','Ć','D','E','Ę','D','F','H','I','J','K','L','Ł','M','N','Ń','O','Ó','P','R','S','Ś','T','U','W','Y','Z','Ź','Ż'};
+        Character[] letters = null;
+        if (FacesContext.getCurrentInstance().getELContext().getLocale().getISO3Language().equals("rus")) {
+            letters = new Character[]{'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я',};
+        } else if (FacesContext.getCurrentInstance().getELContext().getLocale().getISO3Language().equals("eng")) {
+            letters = new Character[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+        } else if (FacesContext.getCurrentInstance().getELContext().getLocale().getISO3Language().equals("pol")) {
+            letters = new Character[]{'A', 'Ą', 'B', 'C', 'Ć', 'D', 'E', 'Ę', 'D', 'F', 'H', 'I', 'J', 'K', 'L', 'Ł', 'M', 'N', 'Ń', 'O', 'Ó', 'P', 'R', 'S', 'Ś', 'T', 'U', 'W', 'Y', 'Z', 'Ź', 'Ż'};
         }
 
         return letters;
     }
+
+    
 
     public void switchEditorMode() {
         isEditorMode = !isEditorMode;

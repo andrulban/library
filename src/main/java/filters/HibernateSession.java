@@ -29,7 +29,7 @@ import org.hibernate.SessionFactory;
 
 @WebFilter(filterName = "HibernateSession",
 urlPatterns = {"/pages/*","/PdfReader"})
-public class HibernateSession implements Filter {
+public class HibernateSession implements Filter {   //za pomocy tego objektu otwieram connection do BD z url : "/pages/*","/PdfReader"
 
     private SessionFactory sessionCreatingFactory;
     private static final boolean debug = false;

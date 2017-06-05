@@ -33,7 +33,7 @@ public class PublisherController implements Serializable, Converter {
     
 
     @PostConstruct
-    public void init() {
+    public void init() {    //wykorzystuje sie w momencie redagowania ksiazki, zeby lista dawala podpowidz jakie wydawnictwo jest u tej ksiazki
         pageOfBooks = bookListController.getPageOfBooks();
         dBHelper = bookListController.getdBHelper();
 

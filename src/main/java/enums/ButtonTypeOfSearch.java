@@ -9,6 +9,6 @@ package enums;
  *
  * @author andrusha
  */
-public enum ButtonTypeOfSearch {
+public enum ButtonTypeOfSearch {    //Enum wykorzystany do zmiany jezyku napisow na searchButton
      AUTHORNAME, BOOKTITLE
 }

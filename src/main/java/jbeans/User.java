@@ -32,15 +32,15 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String goHome() {
+    public String goHome() {    //przejscie ze strony books na index
         return "index";
     }
 
-    public String goToBooks() {
+    public String goToBooks() { //ze strony index na strone books
         return "books";
     }
 
-    public String login() {
+    public String login() {     //sprawdzanie danych i logowanie urzytkownika, przejscie na strone books jezeli wszyskie dane sa poprawne
         try {
             HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             if (request.getUserPrincipal() == null || (request.getUserPrincipal() != null && !request.getUserPrincipal().getName().equals(username))) {
@@ -59,7 +59,7 @@ public class User implements Serializable {
         return "index";
     }
 
-    public String logout() {
+    public String logout() {    //wylogowanie i przejscie na strone index
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();

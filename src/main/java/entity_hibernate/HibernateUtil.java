@@ -18,7 +18,7 @@ public class HibernateUtil {
 
     private static final SessionFactory sessionFactory;
     
-    static {
+    static {    //tworzenie z xml sessionFactory, ktora potem bedzie otwierala connections do BD
         try {
             // Create the SessionFactory from standard (hibernate.cfg.xml) 
             // config file.

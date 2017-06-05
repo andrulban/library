@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "ImageShower",
 urlPatterns = {"/ImageShower"})
-public class ImageShower extends HttpServlet {
+public class ImageShower extends HttpServlet { //za pomocy tego servleta wyswietlamy zdjecia kazdej s ksiazek w dataGridzie
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

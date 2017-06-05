@@ -11,7 +11,7 @@ import org.primefaces.component.datagrid.DataGrid;
  *
  * @author andrusha
  */
-public class BookDG {
+public class BookDG {   //dataGrid do strony books
     private DataGrid dg;
     public BookDG() {
         

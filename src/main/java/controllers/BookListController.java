@@ -42,7 +42,7 @@ public class BookListController implements Serializable {
     private PageOfBooks pageOfBooks;
     private BookExt selectedBook;
 
-    public BookListController() {
+    public BookListController() { //tworzymy glowny controller, objekt DAO (dBHelper), dataModel (bookListDataModel), i napisy na searchButtonie
         pageOfBooks = new PageOfBooks();
         dBHelper = new DBHelper(pageOfBooks);
         bookListDataModel = new BookListDataModel(pageOfBooks, dBHelper);
@@ -51,22 +51,22 @@ public class BookListController implements Serializable {
         searchList.put(bundle.getString("title"), ButtonTypeOfSearch.BOOKTITLE);
     }
 
-//<editor-fold defaultstate="collapsed" desc="Filling of bookList by deffrent types">
-    public void fillBooksByGenre() {
+//<editor-fold defaultstate="collapsed" desc="Napelniamy liste ksiazek w rozne sposoby">
+    public void fillBooksByGenre() { //po gatunku
         cancleBookEditing();
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         submitValues(' ', Integer.valueOf(params.get("genre_id")), false, false, true);
         dBHelper.getBooksByGenre((long) selectedGenreId);
     }
 
-    public void fillBooksByLetter() {
+    public void fillBooksByLetter() { //po literce
         cancleBookEditing();
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         submitValues(params.get("letter").charAt(0), -1, false, false, true);
         dBHelper.getBooksByLetter(selectedLetter);
     }
 
-    public void fillBooksBySearch() {
+    public void fillBooksBySearch() {   //po nazwie lub imieni autora
         cancleBookEditing();
         submitValues(' ', -1, false, false, true);
         if (searchString.trim().length() == 0) {
@@ -81,23 +81,19 @@ public class BookListController implements Serializable {
         }
     }
 
-    public void fillBooksByFreshness() {
+    public void fillBooksByFreshness() { //sortujemy po nowosci
         cancleBookEditing();
         submitValues(' ', -1, false, false, false);
         dBHelper.SortAllBooks('F');
     }
 
-    public void fillBooksByRate() {
-
-    }
-
-    private void fillBooksAll() {
+    private void fillBooksAll() {   //pobieramy wszystkie ksiazki
         submitValues(' ', -1, false, false, false);
         dBHelper.getAllBooks();
     }
 //</editor-fold>
 
-    private boolean validateFields() {
+    private boolean validateFields() { //sprawdzanie pol danych pod czas redagowania lub dodawania ksiazki
 
         if (isNullOrEmpty(selectedBook.getAuthor())
                 || isNullOrEmpty(selectedBook.getDescr())
@@ -135,13 +131,13 @@ public class BookListController implements Serializable {
 
     }
 
-    private void failValidation(String message) {
+    private void failValidation(String message) {       //kiedy nie przeszla walidacja
         FacesContext.getCurrentInstance().validationFailed();
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, "error"));
         cancelModes();
     }
 
-    private boolean isNullOrEmpty(Object obj) {
+    private boolean isNullOrEmpty(Object obj) { //mini comparator
         if (obj == null || obj.toString().equals("")) {
             return true;
         }
@@ -149,21 +145,21 @@ public class BookListController implements Serializable {
         return false;
     }
 
-    public void addBook() {
+    public void addBook() { //doawanie ksiazki
         if (!validateFields()) {
             return;
         }
         dBHelper.add(selectedBook);
         dBHelper.populateList();
 
-        cancelAddMode();
+        cancelModes();
 
         ResourceBundle bundle = ResourceBundle.getBundle("propertiesFiles.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(bundle.getString("added_new_book")));
         dataGridBooks.getDataGrid().setFirst(calcSelectedPage());
     }
 
-    public void updatebooklist() {
+    public void updatebooklist() {  //redagowanie ksiazki
         if (!validateFields()) {
             return;
         }
@@ -177,7 +173,7 @@ public class BookListController implements Serializable {
         dataGridBooks.getDataGrid().setFirst(calcSelectedPage());
     }
 
-    public void deleteBook() {
+    public void deleteBook() {      //wyrzucenie ksiazki
         dBHelper.deleteBook(selectedBook);
         dBHelper.populateList();
 
@@ -187,8 +183,8 @@ public class BookListController implements Serializable {
 
     }
 
-    private int calcSelectedPage() {
-        int page = dataGridBooks.getDataGrid().getPage();// текущий номер страницы (индексация с нуля)
+    private int calcSelectedPage() {    //wyliczamy ilosc potrzebnych do wyswietlenia ksiazek stron
+        int page = dataGridBooks.getDataGrid().getPage();
 
         int leftBound = pageOfBooks.getAmountOnOnePage()* (page - 1);
         int rightBound = pageOfBooks.getAmountOnOnePage() * page;
@@ -202,16 +198,8 @@ public class BookListController implements Serializable {
         return (page > 0) ? page * pageOfBooks.getAmountOnOnePage() : 0;
     }
 
-    public void searchStringChanged(ValueChangeEvent e) {
-        searchString = e.getNewValue().toString();
-    }
-
-    public void ButtonTypeOfSearchChanged(ValueChangeEvent e) {
-        buttonTypeOfSearch = (ButtonTypeOfSearch) e.getNewValue();
-    }
-
     private void submitValues(Character selectedLetter, int selectedGenreId, boolean isFromPages, boolean isEditorMode, boolean cancelBookEditing) {
-        this.selectedLetter = selectedLetter;
+        this.selectedLetter = selectedLetter;   //metoda wywoluje sie wyszukiwaniu ksiazki
         this.selectedGenreId = selectedGenreId;
         this.isEditorMode = isEditorMode;
         dataGridBooks.getDataGrid().setFirst(0);
@@ -221,24 +209,18 @@ public class BookListController implements Serializable {
 
     }
 
-    public void cancleBookEditing() {
+    public void cancleBookEditing() {   //kiedy konczymy redagowanie ksiazki
         isEditorMode = false;
     }
 
-    public void changeBooksCountOnPage(ValueChangeEvent e) {
-        isEditorMode = false;
-        cancleBookEditing();
-        dBHelper.populateList();
-    }
-
-    public void setButtonLocale(Locale locale) {
+    public void setButtonLocale(Locale locale) {    //zmieniamy jezyk na searchButton
         ResourceBundle bundle = ResourceBundle.getBundle("propertiesFiles.messages", locale);
         searchList = new HashMap<>();
         searchList.put(bundle.getString("author"), ButtonTypeOfSearch.AUTHORNAME);
         searchList.put(bundle.getString("title"), ButtonTypeOfSearch.BOOKTITLE);
     }
 
-    public Character[] getRussianLetters() {
+    public Character[] getRussianLetters() {    //przy zmianie jezyka zmieniaja sie litery wyswietlane na stronie, za pomocy ktorych mozna szukac po pierwszej literce w nazwie
         Character[] letters = null;
         if (FacesContext.getCurrentInstance().getELContext().getLocale().getISO3Language().equals("rus")) {
             letters = new Character[]{'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я',};
@@ -257,14 +239,8 @@ public class BookListController implements Serializable {
         isEditorMode = !isEditorMode;
     }
 
-    public void cancelModes() {
+    public void cancelModes() { //zamyka okienko do redagowania lub dodawania ksiazki
         isEditorMode = false;
-        isAddMode = false;
-        RequestContext.getCurrentInstance().execute("PF('bookEditDialog').hide();");
-
-    }
-
-    public void cancelAddMode() {
         isAddMode = false;
         RequestContext.getCurrentInstance().execute("PF('bookEditDialog').hide();");
 

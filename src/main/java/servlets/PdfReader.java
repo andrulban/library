@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "PdfContent",
         urlPatterns = {"/PdfContent"})
-public class PdfReader extends HttpServlet {
+public class PdfReader extends HttpServlet {    //za pomocy tego servleta wyswietlamy albo sciagamy pdf
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,9 +34,10 @@ public class PdfReader extends HttpServlet {
         OutputStream out = response.getOutputStream();
         try {
             BookListController bookListController = (BookListController) request.getSession().getAttribute("bookListController");
-            if (request.getParameter("action").equals("downloading")) {
+            if (request.getParameter("action").equals("downloading")) { //jezeli action = rownia sie downloading wtedy sciagamy pdf
                 response.setHeader("Content-Disposition", "attachement; filename="+URLEncoder.encode(request.getParameter("selectedBookName"), "UTF-8")+".pdf");
             }          
+            //jezeli nie wtedy po prostu wyswietlamy go
             byte[] content =bookListController.getdBHelper().getContent(Long.valueOf(request.getParameter("selectedBookId")));
             response.setContentLength(content.length);
             out.write(content);

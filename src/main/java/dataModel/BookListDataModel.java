@@ -28,7 +28,7 @@ public class BookListDataModel extends LazyDataModel<BookExt>{
     }
 
     @Override
-    public Object getRowKey(BookExt book) {
+    public Object getRowKey(BookExt book) {     //za pomocy nastepujacych trzech metod dziala dataGrid na stronie books
         return book.getId();
     }
 

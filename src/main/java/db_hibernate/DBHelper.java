@@ -33,7 +33,7 @@ public class DBHelper {
     private PageOfBooks pageOfBooks;
     private ProjectionList bookProjection;
 
-    public DBHelper(PageOfBooks pageOfBooks) {
+    public DBHelper(PageOfBooks pageOfBooks) {  //tworzenie objektu DAO dla pracy z BD, projekcji zrobione zeby nie pobierac kazdy raz czesc pdf
         this.pageOfBooks = pageOfBooks;
         prepareCriterias();
         sessionFactory = HibernateUtil.getSessionFactory();
@@ -53,32 +53,32 @@ public class DBHelper {
         populateList();
     }
 
-    private Session getSession() {
+    private Session getSession() {  //otwiera connection do BD
         return sessionFactory.getCurrentSession();
     }
 
-    public List<GenreExt> getAllGenres() {
+    public List<GenreExt> getAllGenres() {      //pobiera wszystkie ksiazki
         return getSession().createCriteria(GenreExt.class).list();
     }
 
-    public List<PublisherExt> getAllPublishers() {
+    public List<PublisherExt> getAllPublishers() { //pobiera wszystkie wydawnictwa
         return getSession().createCriteria(PublisherExt.class).list();
     }
 
-    public List<AuthorExt> getAllAuthors() {
+    public List<AuthorExt> getAllAuthors() {    //pobiera wszystkich autorow
         return getSession().createCriteria(AuthorExt.class).list();
     }
 
-    public AuthorExt getAuthor(long id) {
+    public AuthorExt getAuthor(long id) {   //pobiera autora po id
         return (AuthorExt) getSession().get(AuthorExt.class, id);
     }
 
-    public void getAllBooks() {
-        prepareCriterias();
-        populateList();
+    public void getAllBooks() { //pobiera wszystkie ksiazki
+        prepareCriterias(); 
+        populateList();     
     }
 
-    public void getBooksByGenre(Long genreId) {
+    public void getBooksByGenre(Long genreId) { //pobiera ksiazki po id gatunka
 
         Criterion criterion = Restrictions.eq("genre.id", genreId);
 
@@ -86,7 +86,7 @@ public class DBHelper {
         populateList();
     }
 
-    public void getBooksByLetter(Character letter) {
+    public void getBooksByLetter(Character letter) {    //pobiera ksiazki po pierwszej literie w nazwie
 
         Criterion criterion = Restrictions.ilike("b.name", letter.toString(), MatchMode.START);
 
@@ -94,7 +94,7 @@ public class DBHelper {
         populateList();
     }
 
-    public void getBooksByAuthor(String authorName) {
+    public void getBooksByAuthor(String authorName) {   //pobiera ksiazki po imionach autora
 
         Criterion criterion = Restrictions.ilike("author.allNames", authorName, MatchMode.ANYWHERE);
 
@@ -102,7 +102,7 @@ public class DBHelper {
         populateList();
     }
 
-    public void getBooksByName(String bookName) {
+    public void getBooksByName(String bookName) { //pobiera ksiazki po nazwie
 
         Criterion criterion = Restrictions.ilike("b.name", bookName, MatchMode.ANYWHERE);
 
@@ -110,7 +110,7 @@ public class DBHelper {
         populateList();
     }
 
-    public void SortAllBooks(Character kind) {
+    public void SortAllBooks(Character kind) { //sortuje ksiazki po nowosci
         prepareCriterias();
         if (kind.equals('F')) {
             runCountCriteria();
@@ -121,7 +121,7 @@ public class DBHelper {
         }
     }
     
-    public boolean isIsbnExist(String isbn, Long id) {
+    public boolean isIsbnExist(String isbn, Long id) {  //sprawdza czy istnieje taki isbn
         
         Criteria criteria = getSession().createCriteria(BookExt.class,"b");
         criteria.createAlias("b.author", "author");
@@ -139,33 +139,33 @@ public class DBHelper {
         
     }
 
-    public byte[] getContent(Long id) {
+    public byte[] getContent(Long id) {     //pobiera pdf
         Criteria criteria = getSession().createCriteria(BookExt.class);
         criteria.setProjection(Property.forName("content"));
         criteria.add(Restrictions.eq("id", id));
         return (byte[]) criteria.uniqueResult();
     }
 
-    private void runBookListCriteria() {
+    private void runBookListCriteria() {        //pobira ksiazki na zapyt
         Criteria criteria = bookListCriteria.addOrder(Order.asc("b.name")).getExecutableCriteria(getSession());
         criteria.setProjection(bookProjection).setResultTransformer(Transformers.aliasToBean(BookExt.class));
         List<BookExt> list = criteria.setFirstResult(pageOfBooks.getStart()).setMaxResults(pageOfBooks.getAmountOnOnePage()).list();
         pageOfBooks.setListOfBookExts(list);
     }
 
-    private void runCountCriteria() {
+    private void runCountCriteria() {   //wylicza islosc ksiazek na zapyt
         Criteria criteria = booksCountCriteria.getExecutableCriteria(getSession());
         Long total = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
         pageOfBooks.setTotalBooksCount(total);
     }
     
-    public void add(BookExt book) {
+    public void add(BookExt book) {     //dodaje ksiazke
         getSession().save(book);
         book.setContentEdited(false);
         book.setImageEdited(false);
     }
 
-    public void update(BookExt book) {
+    public void update(BookExt book) {    //odnawia jakas ksiazke
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("update BookExt ");
         queryBuilder.append("set name = :name, ");
@@ -215,13 +215,13 @@ public class DBHelper {
         //session.close();        
     }
 
-    public void deleteBook(BookExt book) {
+    public void deleteBook(BookExt book) {      //usuwa z BD ksiazke
         Query query = getSession().createQuery("delete from BookExt where id = :id");
         query.setParameter("id", book.getId());
         int result = query.executeUpdate();
     }
 
-    private void prepareCriterias(Criterion criterion) {
+    private void prepareCriterias(Criterion criterion) {    //tworzy rodzaj kryterij do których nie jest potrzebne otwieranie sesji
         bookListCriteria = DetachedCriteria.forClass(BookExt.class, "b");
         createAliases(bookListCriteria);
         bookListCriteria.add(criterion);
@@ -231,7 +231,7 @@ public class DBHelper {
         booksCountCriteria.add(criterion);
     }
 
-    private void prepareCriterias() {
+    private void prepareCriterias() {   //tworzy aliasy
         bookListCriteria = DetachedCriteria.forClass(BookExt.class, "b");
         createAliases(bookListCriteria);
 
@@ -245,7 +245,7 @@ public class DBHelper {
         criteria.createAlias("b.publisher", "publisher");
     }
 
-    public void populateList() {
+    public void populateList() {    //wylicza ilosc ksiazek na ten query i pobira wszytkie ksiazki
         runCountCriteria();
         runBookListCriteria();
     }

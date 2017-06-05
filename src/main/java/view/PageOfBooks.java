@@ -3,7 +3,7 @@ package view;
 import entity.ext.BookExt;
 import java.util.List;
 
-public class PageOfBooks {
+public class PageOfBooks {  //model a same List w ktorym sa wszystkie ksiazki ktory sa wyswietlane na stronie books
 
     private List<BookExt> listOfBookExts;
     private BookExt currentBookExt;

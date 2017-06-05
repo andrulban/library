@@ -47,7 +47,6 @@ public class ContentController implements Serializable {
         }
         bookListController.getSelectedBook().setContent(file.getContents());
         bookListController.getSelectedBook().setContentEdited(true);
-        //bookListController.updatebooklist(true, false);
         file = null;
     }            
     

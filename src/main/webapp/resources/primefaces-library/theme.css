@@ -970,13 +970,13 @@ border-right:none;
     background:#c4c4c4 -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0)));
     background:#c4c4c4 -moz-linear-gradient(top, rgba(255,255,255,0.8), rgba(255,255,255,0));
 }
-*html .ui-menu .ui-menu-list {
+html .ui-menu .ui-menu-list {
     background:none;
 }
-*html .ui-menubar .ui-menu-child {
+html .ui-menubar .ui-menu-child {
     background:#ffffff;
 }
-*html .ui-menu .ui-menuitem-link {
+html .ui-menu .ui-menuitem-link {
     border-color:#c4c4c4;
     filter:chroma(color=#c4c4c4);
 }

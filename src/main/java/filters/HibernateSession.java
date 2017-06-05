@@ -31,7 +31,7 @@ import org.hibernate.SessionFactory;
 urlPatterns = {"/pages/*","/PdfReader"})
 public class HibernateSession implements Filter {
 
-    private SessionFactory sessionFactory;
+    private SessionFactory sessionCreatingFactory;
     private static final boolean debug = false;
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -141,38 +141,19 @@ public class HibernateSession implements Filter {
         HibernateSession.RequestWrapper wrappedRequest = new HibernateSession.RequestWrapper((HttpServletRequest) request);
         HibernateSession.ResponseWrapper wrappedResponse = new HibernateSession.ResponseWrapper((HttpServletResponse) response);
 
-
-
-//        String path = wrappedRequest.getRequestURI().substring(wrappedRequest.getContextPath().length());
-
-//        if (!path.startsWith(ResourceHandler.RESOURCE_IDENTIFIER)) {
-        System.out.println("open session for " + wrappedRequest.getRequestURI());
-        sessionFactory.getCurrentSession().beginTransaction();
-//        }
+        sessionCreatingFactory.getCurrentSession().beginTransaction();
 
         try {
 
             if (debug) {
                 log("CheckSessionFilter:doFilter()");
             }
-
-
-
             doBeforeProcessing(wrappedRequest, wrappedResponse);
-
-
             chain.doFilter(wrappedRequest, wrappedResponse);
-
             Throwable problem = null;
-
             doAfterProcessing(wrappedRequest, wrappedResponse);
-
-            sessionFactory.getCurrentSession().getTransaction().commit();
-            sessionFactory.getCurrentSession().close();
-            System.out.println("close session for " + wrappedRequest.getRequestURI());
-
-
-
+            sessionCreatingFactory.getCurrentSession().getTransaction().commit();
+            sessionCreatingFactory.getCurrentSession().close();
 
             // If there was a problem, we want to rethrow it if it is
             // a known type, otherwise log it.
@@ -188,9 +169,9 @@ public class HibernateSession implements Filter {
 
         } catch (Exception e) {
             e.printStackTrace();
-            if (sessionFactory.getCurrentSession().getTransaction().isActive()) {
-                sessionFactory.getCurrentSession().getTransaction().rollback();
-                sessionFactory.getCurrentSession().close();
+            if (sessionCreatingFactory.getCurrentSession().getTransaction().isActive()) {
+                sessionCreatingFactory.getCurrentSession().getTransaction().rollback();
+                sessionCreatingFactory.getCurrentSession().close();
             }
         }
     }
@@ -221,7 +202,7 @@ public class HibernateSession implements Filter {
      * Init method for this filter
      */
     public void init(FilterConfig filterConfig) {
-        sessionFactory = HibernateUtil.getSessionFactory();
+        sessionCreatingFactory = HibernateUtil.getSessionFactory();
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
@@ -233,17 +214,7 @@ public class HibernateSession implements Filter {
     /**
      * Return a String representation of this object.
      */
-    @Override
-    public String toString() {
-        if (filterConfig == null) {
-            return ("CheckSessionFilter()");
-        }
-        StringBuilder sb = new StringBuilder("CheckSessionFilter(");
-        sb.append(filterConfig);
-        sb.append(")");
-        return (sb.toString());
-
-    }
+    
 
     private void sendProcessingError(Throwable t, ServletResponse response) {
         String stackTrace = getStackTrace(t);

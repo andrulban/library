@@ -1,11 +1,11 @@
 package controllers;
 
-import comparator.ListComparator;
 import db_hibernate.DBHelper;
 import entity.ext.PublisherExt;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,33 +17,40 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
-import jbeans.Pager;
+import view.PageOfBooks;
 
 @ManagedBean(eager = false)
 @SessionScoped
 public class PublisherController implements Serializable, Converter {
 
+    @ManagedProperty(value = "#{bookListController}")
+    private BookListController bookListController;
     private List<SelectItem> selectItems = new ArrayList<SelectItem>();
     private Map<Long, PublisherExt> map;
     private List<PublisherExt> list;
-    private Pager pager;
+    private PageOfBooks pageOfBooks;
     private DBHelper dBHelper;
-    @ManagedProperty(value = "#{bookListController}")
-    private BookListController bookListController;
+    
 
     @PostConstruct
     public void init() {
-        pager = bookListController.getPager();
+        pageOfBooks = bookListController.getPageOfBooks();
         dBHelper = bookListController.getdBHelper();
 
         map = new HashMap<Long, PublisherExt>();
         list = dBHelper.getAllPublishers();
 
-        Collections.sort(list, ListComparator.getInstance());
+        Collections.sort(list, new Comparator<PublisherExt>() {
+            @Override
+            public int compare(PublisherExt o1, PublisherExt o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+
+        });
 
         for (PublisherExt publisher : list) {
             map.put(publisher.getId(), publisher);
-            selectItems.add(new SelectItem(publisher, publisher.getName()));
+            selectItems.add(new SelectItem(publisher, publisher.getPublisherName()));
         }
 
     }

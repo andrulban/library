@@ -26,6 +26,6 @@ public class PublisherExt extends entity_hibernate.Publisher  {
 
     @Override
     public String toString() {
-        return super.getName();
+        return super.getPublisherName();
     }
 }

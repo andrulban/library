@@ -1,12 +1,12 @@
 package controllers;
 
-import comparator.ListComparator;
 import db_hibernate.DBHelper;
-import jbeans.Pager;
+import view.PageOfBooks;
 import entity.ext.GenreExt;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,26 +23,33 @@ import javax.faces.model.SelectItem;
 @SessionScoped
 public class GenreController implements Serializable, Converter {
 
+    @ManagedProperty(value = "#{bookListController}")
+    private BookListController bookListController;
     private List<SelectItem> selectItems = new ArrayList<SelectItem>();
     private Map<Long, GenreExt> map;
     private List<GenreExt> list;
-    private Pager pager;
+    private PageOfBooks pageOfBooks;
     private DBHelper dBHelper;
-    @ManagedProperty(value = "#{bookListController}")
-    private BookListController bookListController;
+    
 
     @PostConstruct
     public void init() {
-        pager = bookListController.getPager();
+        pageOfBooks = bookListController.getPageOfBooks();
         dBHelper = bookListController.getdBHelper();
 
         map = new HashMap<Long, GenreExt>();
         list = dBHelper.getAllGenres();
-        Collections.sort(list, ListComparator.getInstance());
+        Collections.sort(list, new Comparator<GenreExt>() {
+            @Override
+            public int compare(GenreExt o1, GenreExt o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+
+        });
 
         for (GenreExt genre : list) {
             map.put(genre.getId(), genre);
-            selectItems.add(new SelectItem(genre, genre.getName()));
+            selectItems.add(new SelectItem(genre, genre.getGenreName()));
         }
 
     }

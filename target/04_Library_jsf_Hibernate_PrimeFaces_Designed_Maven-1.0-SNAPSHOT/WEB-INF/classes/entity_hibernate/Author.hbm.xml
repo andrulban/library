@@ -8,13 +8,13 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <property name="fio" type="string">
+        <property name="allNames" type="string">
             <column name="fio" length="300" not-null="true" />
         </property>
-        <property name="birthday" type="date">
+        <property name="birthdayDate" type="date">
             <column name="birthday" length="10" not-null="true" />
         </property>
-        <set name="books" table="book" inverse="true" lazy="true" fetch="select">
+        <set name="bookConnectedWith" table="book" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="author_id" not-null="true" />
             </key>

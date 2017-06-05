@@ -9,44 +9,44 @@ import java.util.Set;
  */
 public class Genre implements java.io.Serializable {
 
+    private Set bookConnectedWith = new HashSet(0);
     private Long id;
-    private String name;
-    private Set books = new HashSet(0);
+    private String genreName;
 
     public Genre() {
     }
 
-    public Genre(String name) {
-        this.name = name;
+    public Genre(String genreName) {
+        this.genreName = genreName;
     }
 
-    public Genre(String name, Set books) {
-        this.name = name;
-        this.books = books;
+    public Genre(String genreName, Set bookConnectedWith) {
+        this.genreName = genreName;
+        this.bookConnectedWith = bookConnectedWith;
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return this.name;
+    public String getGenreName() {
+        return genreName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGenreName(String genreName) {
+        this.genreName = genreName;
     }
 
-    public Set getBooks() {
-        return this.books;
+    public Set getBookConnectedWith() {
+        return bookConnectedWith;
     }
 
-    public void setBooks(Set books) {
-        this.books = books;
-    }    
+    public void setBookConnectedWith(Set bookConnectedWith) {
+        this.bookConnectedWith = bookConnectedWith;
+    }
 
 }

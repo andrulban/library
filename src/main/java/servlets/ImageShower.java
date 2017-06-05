@@ -37,14 +37,11 @@ public class ImageShower extends HttpServlet {
         response.setContentType("image/jpeg");
         OutputStream out = response.getOutputStream();
         try {
-            int index = Integer.valueOf(request.getParameter("index"));
             BookListController bookListController = (BookListController) request.getSession(false).getAttribute("bookListController");
-            Book book = bookListController.getPager().getList().get(index);
-            byte[] image = book.getImage();
-           // int id= Integer.valueOf(request.getParameter("bookId"));
-           // byte[] image = bookListController.getImage(id);
-            response.setContentLength(image.length);
-            out.write(image);
+            Book book = bookListController.getPageOfBooks().getListOfBookExts().get(Integer.valueOf(request.getParameter("index")));
+            byte[] arrayByteOfImage = book.getImage();
+            response.setContentLength(arrayByteOfImage.length);
+            out.write(arrayByteOfImage);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

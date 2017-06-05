@@ -30,7 +30,6 @@ import org.primefaces.model.UploadedFile;
 @SessionScoped
 public class ImageController implements Serializable {
 
-    private final int IMAGE_MAX_SIZE = 204800;
     private byte[] uploadedImage;
     UploadedFile file;
     @ManagedProperty(value = "#{bookListController}")
@@ -50,7 +49,6 @@ public class ImageController implements Serializable {
         }
         bookListController.getSelectedBook().setImage(file.getContents());
         bookListController.getSelectedBook().setImageEdited(true);
-        //bookListController.updatebooklist(false,true);
         file = null;
     }
     
@@ -59,11 +57,9 @@ public class ImageController implements Serializable {
     }
 
     private DefaultStreamedContent getStreamedContent(byte[] image) {
-
         if (image == null) {
             return null;
         }
-
         InputStream inputStream = null;
         try {
             inputStream = new ByteArrayInputStream(image);
@@ -76,10 +72,6 @@ public class ImageController implements Serializable {
                 Logger.getLogger(ImageController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-
-    public int getImageMaxSize() {
-        return IMAGE_MAX_SIZE;
     }
 
     public BookListController getBookListController() {

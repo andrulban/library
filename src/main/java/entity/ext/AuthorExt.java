@@ -26,7 +26,7 @@ public class AuthorExt extends entity_hibernate.Author{
 
     @Override
     public String toString() {
-        return super.getFio();
+        return super.getAllNames();
     }
 
 }

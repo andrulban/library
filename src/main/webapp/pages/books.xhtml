@@ -29,10 +29,10 @@
 
                         <div class="item">
                             <h:outputLink styleClass="content_link" value="#{request.contextPath}/PdfReader" target="_blank">
-                                <p:graphicImage alt="#{messages.book_cover}" value="/ImageShower?index=#{bookListController.pager.rowIndex}" width="100" height="147" cache="false"/> 
-                                <f:param name="book" value="#{book.id}"/>
-                                <f:param name="action" value="read"/>
-                                <f:param name="bookName" value="#{book.name}"/>
+                                <p:graphicImage alt="#{messages.book_cover}" value="/ImageShower?index=#{bookListController.pageOfBooks.rowIndex}" width="100" height="147" cache="false"/> 
+                                <f:param name="selectedBookId" value="#{book.id}"/>
+                                <f:param name="action" value="reading"/>
+                                <f:param name="selectedBookName" value="#{book.name}"/>
                             </h:outputLink>
 
 
@@ -43,9 +43,9 @@
                                 <div class="book_name">  
                                     <h:outputLink   styleClass="title" value="#{request.contextPath}/PdfReader" rendered="#{!book.isEditing}">
                                         #{book.name}
-                                        <f:param name="book" value="#{book.id}"/>
-                                        <f:param name="action" value="read"/>
-                                        <f:param name="bookName" value="#{book.name}"/>
+                                        <f:param name="selectedBookId" value="#{book.id}"/>
+                                        <f:param name="action" value="reading"/>
+                                        <f:param name="selectedBookName" value="#{book.name}"/>
                                     </h:outputLink>
                                 </div>
                                 <span>#{book.author}</span>
@@ -59,16 +59,16 @@
 
                             <h:outputLink styleClass="mr" value="#{request.contextPath}/PdfReader" target="_blank">
                                 <h:outputText styleClass="read" value="#{messages.read}"/>
-                                <f:param name="book" value="#{book.id}"/>
-                                <f:param name="action" value="read"/>
-                                <f:param name="bookName" value="#{book.name}"/>
+                                <f:param name="selectedBookId" value="#{book.id}"/>
+                                <f:param name="action" value="reading"/>
+                                <f:param name="selectedBookName" value="#{book.name}"/>
                             </h:outputLink>
 
                             <h:outputLink styleClass="mr" value="#{request.contextPath}/PdfReader" target="_blank">
                                 <h:outputText styleClass="download" value="#{messages.download}"/>
-                                <f:param name="book" value="#{book.id}"/>
-                                <f:param name="action" value="download"/>
-                                <f:param name="bookName" value="#{book.name}"/>
+                                <f:param name="selectedBookId" value="#{book.id}"/>
+                                <f:param name="action" value="downloading"/>
+                                <f:param name="selectedBookName" value="#{book.name}"/>
                             </h:outputLink>
 
                             <p:commandLink styleClass="mr" actionListener="#{bookListController.switchEditMode}" title="#{messages.Edit}" update=":bookDetails" rendered="#{request.isUserInRole('admin')}">  
@@ -97,7 +97,7 @@
 
                 <div class="box-sh">
 
-                    <h1><p:outputLabel id="booksCountOutputText" value="#{messages.found_books}  #{bookListController.pager.totalBooksCount}" /></h1>
+                    <h1><p:outputLabel id="booksCountOutputText" value="#{messages.found_books}  #{bookListController.pageOfBooks.totalBooksCount}" /></h1>
 
 
 

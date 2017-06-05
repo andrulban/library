@@ -6,7 +6,7 @@ import entity.ext.GenreExt;
 import entity.ext.PublisherExt;
 import entity_hibernate.HibernateUtil;
 import java.util.List;
-import jbeans.Pager;
+import view.PageOfBooks;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -30,11 +30,11 @@ public class DBHelper {
     private SessionFactory sessionFactory = null;
     private DetachedCriteria bookListCriteria;
     private DetachedCriteria booksCountCriteria;
-    private Pager pager;
+    private PageOfBooks pageOfBooks;
     private ProjectionList bookProjection;
 
-    public DBHelper(Pager pager) {
-        this.pager = pager;
+    public DBHelper(PageOfBooks pageOfBooks) {
+        this.pageOfBooks = pageOfBooks;
         prepareCriterias();
         sessionFactory = HibernateUtil.getSessionFactory();
 
@@ -96,7 +96,7 @@ public class DBHelper {
 
     public void getBooksByAuthor(String authorName) {
 
-        Criterion criterion = Restrictions.ilike("author.fio", authorName, MatchMode.ANYWHERE);
+        Criterion criterion = Restrictions.ilike("author.allNames", authorName, MatchMode.ANYWHERE);
 
         prepareCriterias(criterion);
         populateList();
@@ -116,8 +116,8 @@ public class DBHelper {
             runCountCriteria();
             Criteria criteria = bookListCriteria.addOrder(Order.desc("b.id")).getExecutableCriteria(getSession());
             criteria.setProjection(bookProjection).setResultTransformer(Transformers.aliasToBean(BookExt.class));
-            List<BookExt> list = criteria.setFirstResult(pager.getFrom()).setMaxResults(pager.getTo()).list();
-            pager.setList(list);
+            List<BookExt> list = criteria.setFirstResult(pageOfBooks.getStart()).setMaxResults(pageOfBooks.getAmountOnOnePage()).list();
+            pageOfBooks.setListOfBookExts(list);
         }
     }
     
@@ -149,14 +149,14 @@ public class DBHelper {
     private void runBookListCriteria() {
         Criteria criteria = bookListCriteria.addOrder(Order.asc("b.name")).getExecutableCriteria(getSession());
         criteria.setProjection(bookProjection).setResultTransformer(Transformers.aliasToBean(BookExt.class));
-        List<BookExt> list = criteria.setFirstResult(pager.getFrom()).setMaxResults(pager.getTo()).list();
-        pager.setList(list);
+        List<BookExt> list = criteria.setFirstResult(pageOfBooks.getStart()).setMaxResults(pageOfBooks.getAmountOnOnePage()).list();
+        pageOfBooks.setListOfBookExts(list);
     }
 
     private void runCountCriteria() {
         Criteria criteria = booksCountCriteria.getExecutableCriteria(getSession());
         Long total = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
-        pager.setTotalBooksCount(total);
+        pageOfBooks.setTotalBooksCount(total);
     }
     
     public void add(BookExt book) {

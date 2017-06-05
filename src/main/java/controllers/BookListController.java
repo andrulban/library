@@ -7,7 +7,7 @@ package controllers;
 
 import db_hibernate.DBHelper;
 import entity.ext.BookExt;
-import enums.SearchType;
+import enums.ButtonTypeOfSearch;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
@@ -19,9 +19,9 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.servlet.http.HttpSession;
-import jbeans.DataGridBooks;
-import jbeans.Pager;
-import models.BookListDataModel;
+import jbeans.BookDG;
+import view.PageOfBooks;
+import dataModel.BookListDataModel;
 import org.primefaces.context.RequestContext;
 
 @ManagedBean(eager = true)
@@ -29,26 +29,26 @@ import org.primefaces.context.RequestContext;
 public class BookListController implements Serializable {
 
     // private DataTable dataTable;
-    private DataGridBooks dataGridBooks;
+    private BookDG dataGridBooks;
     private DBHelper dBHelper;
     private int selectedGenreId; // выбранный жанр
     private char selectedLetter; // выбранная буква алфавита
-    private HashMap<String, SearchType> searchList = new HashMap<>();
+    private HashMap<String, ButtonTypeOfSearch> searchList = new HashMap<>();
     private BookListDataModel bookListDataModel;
-    private SearchType searchType;
+    private ButtonTypeOfSearch buttonTypeOfSearch;
     private String searchString;
     private boolean isEditorMode = false;
     private boolean isAddMode = false;
-    private Pager pager;
+    private PageOfBooks pageOfBooks;
     private BookExt selectedBook;
 
     public BookListController() {
-        pager = new Pager();
-        dBHelper = new DBHelper(pager);
-        bookListDataModel = new BookListDataModel(pager, dBHelper);
+        pageOfBooks = new PageOfBooks();
+        dBHelper = new DBHelper(pageOfBooks);
+        bookListDataModel = new BookListDataModel(pageOfBooks, dBHelper);
         ResourceBundle bundle = ResourceBundle.getBundle("propertiesFiles.messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
-        searchList.put(bundle.getString("author"), SearchType.AUTHOR);
-        searchList.put(bundle.getString("title"), SearchType.TITLE);
+        searchList.put(bundle.getString("author"), ButtonTypeOfSearch.AUTHORNAME);
+        searchList.put(bundle.getString("title"), ButtonTypeOfSearch.BOOKTITLE);
     }
 
 //<editor-fold defaultstate="collapsed" desc="Filling of bookList by deffrent types">
@@ -74,9 +74,9 @@ public class BookListController implements Serializable {
             return;
         }
 
-        if (searchType == SearchType.AUTHOR) {
+        if (buttonTypeOfSearch == ButtonTypeOfSearch.AUTHORNAME) {
             dBHelper.getBooksByAuthor(searchString);
-        } else if (searchType == SearchType.TITLE) {
+        } else if (buttonTypeOfSearch == ButtonTypeOfSearch.BOOKTITLE) {
             dBHelper.getBooksByName(searchString);
         }
     }
@@ -119,12 +119,12 @@ public class BookListController implements Serializable {
 
         if (isAddMode) {
 
-            if (selectedBook.getContent() == null) {
+            if (selectedBook.getContent()== null) {
                 failValidation("error_load_pdf");
                 return false;
             }
 
-            if (selectedBook.getImage() == null) {
+            if (selectedBook.getImage()== null) {
                 failValidation("error_load_image");
                 return false;
             }
@@ -190,24 +190,24 @@ public class BookListController implements Serializable {
     private int calcSelectedPage() {
         int page = dataGridBooks.getDataGrid().getPage();// текущий номер страницы (индексация с нуля)
 
-        int leftBound = pager.getTo() * (page - 1);
-        int rightBound = pager.getTo() * page;
+        int leftBound = pageOfBooks.getAmountOnOnePage()* (page - 1);
+        int rightBound = pageOfBooks.getAmountOnOnePage() * page;
 
-        boolean goPrevPage = pager.getTotalBooksCount() > leftBound & pager.getTotalBooksCount() <= rightBound;
+        boolean goPrevPage = pageOfBooks.getTotalBooksCount() > leftBound & pageOfBooks.getTotalBooksCount() <= rightBound;
 
         if (goPrevPage) {
             page--;
         }
 
-        return (page > 0) ? page * pager.getTo() : 0;
+        return (page > 0) ? page * pageOfBooks.getAmountOnOnePage() : 0;
     }
 
     public void searchStringChanged(ValueChangeEvent e) {
         searchString = e.getNewValue().toString();
     }
 
-    public void searchTypeChanged(ValueChangeEvent e) {
-        searchType = (SearchType) e.getNewValue();
+    public void ButtonTypeOfSearchChanged(ValueChangeEvent e) {
+        buttonTypeOfSearch = (ButtonTypeOfSearch) e.getNewValue();
     }
 
     private void submitValues(Character selectedLetter, int selectedGenreId, boolean isFromPages, boolean isEditorMode, boolean cancelBookEditing) {
@@ -234,8 +234,8 @@ public class BookListController implements Serializable {
     public void setButtonLocale(Locale locale) {
         ResourceBundle bundle = ResourceBundle.getBundle("propertiesFiles.messages", locale);
         searchList = new HashMap<>();
-        searchList.put(bundle.getString("author"), SearchType.AUTHOR);
-        searchList.put(bundle.getString("title"), SearchType.TITLE);
+        searchList.put(bundle.getString("author"), ButtonTypeOfSearch.AUTHORNAME);
+        searchList.put(bundle.getString("title"), ButtonTypeOfSearch.BOOKTITLE);
     }
 
     public Character[] getRussianLetters() {
@@ -283,12 +283,12 @@ public class BookListController implements Serializable {
     }
 
 //<editor-fold defaultstate="collapsed" desc="Getters and setters">
-    public SearchType getSearchType() {
-        return searchType;
+    public ButtonTypeOfSearch getButtonTypeOfSearch() {
+        return buttonTypeOfSearch;
     }
 
-    public void setSearchType(SearchType searchType) {
-        this.searchType = searchType;
+    public void setButtonTypeOfSearch(ButtonTypeOfSearch buttonTypeOfSearch) {
+        this.buttonTypeOfSearch = buttonTypeOfSearch;
     }
 
     public int getSelectedGenreId() {
@@ -315,11 +315,11 @@ public class BookListController implements Serializable {
         this.searchString = searchString;
     }
 
-    public HashMap<String, SearchType> getSearchList() {
+    public HashMap<String, ButtonTypeOfSearch> getSearchList() {
         return searchList;
     }
 
-    public void setSearchList(HashMap<String, SearchType> searchList) {
+    public void setSearchList(HashMap<String, ButtonTypeOfSearch> searchList) {
         this.searchList = searchList;
     }
 
@@ -327,12 +327,12 @@ public class BookListController implements Serializable {
         return isEditorMode;
     }
 
-    public Pager getPager() {
-        return pager;
+    public PageOfBooks getPageOfBooks() {
+        return pageOfBooks;
     }
 
-    public void setPager(Pager pager) {
-        this.pager = pager;
+    public void setPageOfBooks(PageOfBooks pageOfBooks) {
+        this.pageOfBooks = pageOfBooks;
     }
 
     public BookListDataModel getBookListDataModel() {
@@ -359,11 +359,11 @@ public class BookListController implements Serializable {
         this.selectedBook = selectedBook;
     }
 
-    public DataGridBooks getDataGridBooks() {
-        return dataGridBooks = new DataGridBooks();
+    public BookDG getDataGridBooks() {
+        return dataGridBooks = new BookDG();
     }
 
-    public void setDataGridBooks(DataGridBooks dataGrid) {
+    public void setDataGridBooks(BookDG dataGrid) {
         this.dataGridBooks = dataGrid;
     }
 

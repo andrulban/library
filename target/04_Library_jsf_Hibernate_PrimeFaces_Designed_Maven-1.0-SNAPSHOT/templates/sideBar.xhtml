@@ -19,7 +19,7 @@
 
                         <ui:repeat value="#{genreController.genreList}" var="g">
                             <li>
-                                <p:commandLink update=":contentForm @form :searchForm :lettersForm :booksCountOutputText" value="#{g.name}" styleClass="#{g.id == bookListController.selectedGenreId ? 'selected_link':''}" action="#{bookListController.fillBooksByGenre()}" ajax="false">
+                                <p:commandLink update=":contentForm @form :searchForm :lettersForm :booksCountOutputText" value="#{g.genreName}" styleClass="#{g.id == bookListController.selectedGenreId ? 'selected_link':''}" action="#{bookListController.fillBooksByGenre()}" ajax="false">
                                     <f:param name="genre_id" value="#{g.id}" />
                                 </p:commandLink>
 

@@ -9,44 +9,44 @@ import java.util.Set;
  */
 public class Publisher implements java.io.Serializable {
 
+    private Set bookConnectedWith = new HashSet(0);
     private Long id;
-    private String name;
-    private Set books = new HashSet(0);
+    private String publisherName;
 
     public Publisher() {
     }
 
-    public Publisher(String name) {
-        this.name = name;
+    public Publisher(String publisherName) {
+        this.publisherName = publisherName;
     }
 
-    public Publisher(String name, Set books) {
-        this.name = name;
-        this.books = books;
+    public Publisher(String publisherName, Set books) {
+        this.publisherName = publisherName;
+        this.bookConnectedWith = bookConnectedWith;
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return this.name;
+    public String getPublisherName() {
+        return publisherName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPublisherName(String publisherName) {
+        this.publisherName = publisherName;
     }
 
-    public Set getBooks() {
-        return this.books;
+    public Set getBookConnectedWith() {
+        return bookConnectedWith;
     }
 
-    public void setBooks(Set books) {
-        this.books = books;
-    }    
+    public void setBookConnectedWith(Set bookConnectedWith) {
+        this.bookConnectedWith = bookConnectedWith;
+    }
 
 }

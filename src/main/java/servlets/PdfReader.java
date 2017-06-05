@@ -34,13 +34,10 @@ public class PdfReader extends HttpServlet {
         OutputStream out = response.getOutputStream();
         try {
             BookListController bookListController = (BookListController) request.getSession().getAttribute("bookListController");
-            long id = Long.valueOf(request.getParameter("book"));
-            String action = request.getParameter("action");
-            String bookName = request.getParameter("bookName");
-            if (action.equals("download")) {
-                response.setHeader("Content-Disposition", "attachement; filename="+URLEncoder.encode(bookName, "UTF-8")+".pdf");
+            if (request.getParameter("action").equals("downloading")) {
+                response.setHeader("Content-Disposition", "attachement; filename="+URLEncoder.encode(request.getParameter("selectedBookName"), "UTF-8")+".pdf");
             }          
-            byte[] content =bookListController.getdBHelper().getContent(id);
+            byte[] content =bookListController.getdBHelper().getContent(Long.valueOf(request.getParameter("selectedBookId")));
             response.setContentLength(content.length);
             out.write(content);
         } catch (Exception ex) {

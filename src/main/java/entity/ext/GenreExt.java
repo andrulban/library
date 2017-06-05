@@ -26,7 +26,7 @@ public class GenreExt extends entity_hibernate.Genre {
 
     @Override
     public String toString() {
-        return super.getName();
+        return super.getGenreName();
     }
 
 

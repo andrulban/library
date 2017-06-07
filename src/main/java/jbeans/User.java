@@ -18,7 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @SessionScoped
 @ManagedBean
-
+/**
+ *  @author andrusha
+ * Klasa do logowania i wylogowania i przejscia ze strony index na book i z book na index
+ */
 public class User implements Serializable {
 
     private String username;

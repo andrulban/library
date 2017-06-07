@@ -14,7 +14,7 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
 /**
- *
+ *Za pomocy nastepujacych trzech metod dziala dataGrid na stronie books
  * @author andrusha
  */
 public class BookListDataModel extends LazyDataModel<BookExt>{
@@ -27,8 +27,9 @@ public class BookListDataModel extends LazyDataModel<BookExt>{
         this.dBHelper = dBHelper;
     }
 
+    
     @Override
-    public Object getRowKey(BookExt book) {     //za pomocy nastepujacych trzech metod dziala dataGrid na stronie books
+    public Object getRowKey(BookExt book) {
         return book.getId();
     }
 

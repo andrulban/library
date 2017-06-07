@@ -32,8 +32,11 @@ public class GenreController implements Serializable, Converter {
     private DBHelper dBHelper;
     
 
+    /**
+     * wykorzystuje sie w momencie redagowania ksiazki, zeby lista dawala podpowidz jaki gatunek jest u tej ksiazki
+     */
     @PostConstruct
-    public void init() {        //wykorzystuje sie w momencie redagowania ksiazki, zeby lista dawala podpowidz jaki gatunek jest u tej ksiazki
+    public void init() {
         pageOfBooks = bookListController.getPageOfBooks();
         dBHelper = bookListController.getdBHelper();
 

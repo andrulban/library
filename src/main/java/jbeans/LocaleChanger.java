@@ -13,18 +13,21 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- *
- * @author andrusha
- */
+
 @ManagedBean
 @SessionScoped
-
-public class LocaleChanger implements Serializable {    //ustalamy jezyk na stronie za pomocy tego objektu
+/**
+ * Ustalamy jezyk na stronie za pomocy tego objektu
+ * @author andrusha
+ */
+public class LocaleChanger implements Serializable {    //
 
     private Locale locale;
 
-    public LocaleChanger() {    //spoczatku jezyk angielski
+    /**
+     * Z samego poczatku jezyk - Angielski
+     */
+    public LocaleChanger() {
         locale = new Locale("en");
     }
 
@@ -32,7 +35,11 @@ public class LocaleChanger implements Serializable {    //ustalamy jezyk na stro
         return locale;
     }
 
-    public void changeLocale(String localeName) {   //tutaj mozna zmienac na Polski, Angielski lub Rosyjski
+    /**
+     * Ta metoda zmienia jezyki na stronie: na Polski, Angielski lub Rosyjski
+     * @param localeName 
+     */
+    public void changeLocale(String localeName) {   //
         locale = new Locale(localeName);
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         BookListController bl = (BookListController) request.getSession().getAttribute("bookListController");

@@ -43,23 +43,24 @@ public class DataBaseTests {
     public DataBaseTests() {
     }
     
-    @BeforeClass    //ta część  kodu wykonuje się tylko jeden raz, przed pierwszym testem z tej metody
+    /**Ta część  kodu wykonuje się tylko jeden raz, przed pierwszym testem z tej metody. tworzę fabrykę, za pomocy której będę mógł zawsze otwierać Sesję,    potrzebuje tą fabrykę tylko jeden raz dlatego ten obiekt w @BeforeClass*/
+    @BeforeClass
     public static void setUpClass() {              
-       sessionFactory = HibernateUtil.getSessionFactory();    //tworzę fabrykę, za pomocy której będę mógł zawsze otwierać Sesję,    potrzebuje tą fabrykę tylko jeden raz dlatego ten obiekt w @BeforeClass
+       sessionFactory = HibernateUtil.getSessionFactory();
     }
-    
-    @AfterClass     //ta część  kodu też wykonuje się tylko jeden raz, po ostatnim testu albo po ostatnim tegu @After jeżeli on jest
+    /**Ta część  kodu też wykonuje się tylko jeden raz, po ostatnim testu albo po ostatnim tegu @After jeżeli on jest*/
+    @AfterClass
     public static void tearDownClass() {
     }
-    
-    @Before     //wykonuje się przed każdym testem
+    /**Wykonuje się przed każdym testem, otwiera tranzakcje do BD*/
+    @Before     
     public void setUp() {
         session = sessionFactory.getCurrentSession();
         session.beginTransaction();              
         
     }
-    
-    @After      //wykonuje się po każdym teście
+    /**Wykonuje się po każdym teście, zamyka tranzakcje do BD*/
+    @After
     public void tearDown() {
         session.getTransaction().commit();
     }

@@ -41,7 +41,8 @@ public class ContentController implements Serializable {
         this.file = file;
     }
 
-    public void upload() {      //za pomocy tej metody zalaczamy plik pdf do BD pod czas dodawania ksiazki
+    /**Za pomocy tej metody zalaczamy plik pdf do BD pod czas dodawania ksiazki*/
+    public void upload() {
         if(file.getContents().length==0) {
             return;
         }

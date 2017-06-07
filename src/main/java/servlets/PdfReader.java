@@ -17,7 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "PdfContent",
         urlPatterns = {"/PdfContent"})
-public class PdfReader extends HttpServlet {    //za pomocy tego servleta wyswietlamy albo sciagamy pdf
+/**
+ * Za pomocy tego servleta wyswietlamy albo sciagamy pdf
+ *  @author andrusha
+ */
+public class PdfReader extends HttpServlet {    //
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

@@ -8,10 +8,10 @@ package jbeans;
 import org.primefaces.component.datagrid.DataGrid;
 
 /**
- *
+ *DataGrid do strony books
  * @author andrusha
  */
-public class BookDG {   //dataGrid do strony books
+public class BookDG {
     private DataGrid dg;
     public BookDG() {
         

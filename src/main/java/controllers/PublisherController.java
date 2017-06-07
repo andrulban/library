@@ -31,9 +31,11 @@ public class PublisherController implements Serializable, Converter {
     private PageOfBooks pageOfBooks;
     private DBHelper dBHelper;
     
-
+    /**
+     * Wykorzystuje sie w momencie redagowania ksiazki, zeby lista dawala podpowidz jakie wydawnictwo jest u tej ksiazki
+     */
     @PostConstruct
-    public void init() {    //wykorzystuje sie w momencie redagowania ksiazki, zeby lista dawala podpowidz jakie wydawnictwo jest u tej ksiazki
+    public void init() {
         pageOfBooks = bookListController.getPageOfBooks();
         dBHelper = bookListController.getdBHelper();
 

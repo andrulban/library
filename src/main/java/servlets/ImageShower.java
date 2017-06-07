@@ -18,11 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @author andrusha
+ * Za pomocy tego servleta wyswietlamy zdjecia kazdej s ksiazek w dataGridzie
  */
 @WebServlet(name = "ImageShower",
 urlPatterns = {"/ImageShower"})
-public class ImageShower extends HttpServlet { //za pomocy tego servleta wyswietlamy zdjecia kazdej s ksiazek w dataGridzie
-
+public class ImageShower extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.

@@ -42,8 +42,10 @@ public class ImageController implements Serializable {
     public void setFile(UploadedFile file) {
         this.file = file;
     }
-
-    public void upload() {      //za pomocy tej metody zalaczmy zdjecie pod czas dodawania ksiazki
+    /**
+     *Za pomocy tej metody zalaczmy zdjecie pod czas dodawania ksiazki
+     */
+    public void upload() {      
         if(file.getContents().length==0) {
             return;
         }
@@ -55,8 +57,12 @@ public class ImageController implements Serializable {
     public StreamedContent getDefaultImage() {
         return getStreamedContent(bookListController.getSelectedBook().getImage());
     }
-
-    private DefaultStreamedContent getStreamedContent(byte[] image) {       //za pomocy tej metody wyswietlamy zdjecie ksiazki
+    /**
+     * Za pomocy tej metody wyswietlamy zdjecie ksiazki
+     * @param image
+     * @return 
+     */
+    private DefaultStreamedContent getStreamedContent(byte[] image) {
         if (image == null) {
             return null;
         }

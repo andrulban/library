@@ -31,9 +31,9 @@ public class AuthorController implements Serializable, Converter {
     private PageOfBooks pageOfBooks;
     private DBHelper dBHelper;
     
-
+/**Wykorzystuje sie w momencie redagowania ksiazki, zeby lista dawala podpowidz jaki awtor jest u tej ksiazki*/
     @PostConstruct
-    public void init() {        //wykorzystuje sie w momencie redagowania ksiazki, zeby lista dawala podpowidz jaki awtor jest u tej ksiazki
+    public void init() {
         pageOfBooks = bookListController.getPageOfBooks();
         dBHelper = bookListController.getdBHelper();
 

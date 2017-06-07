@@ -17,8 +17,10 @@ import org.hibernate.cfg.AnnotationConfiguration;
 public class HibernateUtil {
 
     private static final SessionFactory sessionFactory;
-    
-    static {    //tworzenie z xml sessionFactory, ktora potem bedzie otwierala connections do BD
+    /**
+     * Tworzy z xml sessionFactory, ktora potem bedzie otwierala connections do BD
+     */
+    static {
         try {
             // Create the SessionFactory from standard (hibernate.cfg.xml) 
             // config file.
